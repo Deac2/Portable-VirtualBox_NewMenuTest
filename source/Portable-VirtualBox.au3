@@ -1019,9 +1019,9 @@ Func UpdateTabSystem()
                 If GUICtrlRead($Label_Net) <> "Net_Drv" Then GUICtrlSetData($Label_Net, "Net_Drv")
             EndIf
         ElseIf $aServices[$i][0] = "VBoxSVC" Then
-            Local $sReg64 = RegRead("HKLM\SOFTWARE\Classes\CLSID\{0bb3b78c-1807-4249-5ba5-ea42d66af0bf}\InprocServer32", "")
-			Local $sReg32 = RegRead("HKLM\SOFTWARE\Classes\WOW6432Node\CLSID\{0bb3b78c-1807-4249-5ba5-ea42d66af0bf}\InprocServer32", "")
-            If ($sReg64 <> "" Or $sReg32 <> "") And ProcessExists("VBoxSVC.exe") Then
+			Local $sRoot = (@OSArch = "x64" ? "HKLM64" : "HKLM")
+            Local $sReg = RegRead($sRoot&"\SOFTWARE\Classes\CLSID\{0bb3b78c-1807-4249-5ba5-ea42d66af0bf}\InprocServer32", "")
+            If $sReg <> "" And ProcessExists("VBoxSVC.exe") Then
                 $sCurrentStatus = "R"
             Else
                 $sCurrentStatus = "-"
