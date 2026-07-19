@@ -51,7 +51,7 @@ Global $BTNUserHome, $BTNMachineFolder
 Global $HomeRoot, $MachineRoot, $VMStart, $StartLng
 Global $new1 = 0, $new2 = 0, $Settings = 0, $iSort
 Global Const $WS_SYSMENU = 0x80000, $WS_MINIMIZEBOX = 0x20000, $CBS_DROPDOWNLIST = 0x3		; Window Extended Styles
-Global $idTab,$Label_Net, $aLastStatus[6] = ["?", "?", "?", "?", "?", "?"]
+Global $idTab, $Label_Net, $aLastStatus[6] = ["?", "?", "?", "?", "?", "?"]
 
 #cs
 If NOT FileExists(@ScriptDir&"\data\tools") Then DirCreate(@ScriptDir&"\data\tools")
@@ -174,11 +174,11 @@ If NOT (FileExists(@ScriptDir&"\app32\VirtualBox.exe") OR FileExists(@ScriptDir&
   GUICtrlCreateButton(GetTranslation($Lang, "download", "05"), 532, 69, 93, 25)
   GUICtrlSetOnEvent(-1, "SearchFile")
 
-  $Checkbox100 = GUICtrlCreateCheckbox(GetTranslation($Lang, "download", "06"), 152, 101, 330, 26)
-  $Checkbox110 = GUICtrlCreateCheckbox(GetTranslation($Lang, "download", "07"), 152, 125, 330, 26)
-  $Checkbox120 = GUICtrlCreateCheckbox(GetTranslation($Lang, "download", "08"), 152, 149, 330, 26)
-  $Checkbox130 = GUICtrlCreateCheckbox(GetTranslation($Lang, "download", "09"), 152, 173, 330, 26)
-  $Checkbox140 = GUICtrlCreateCheckbox(GetTranslation($Lang, "download", "10"), 152, 197, 330, 26)
+  $Checkbox100 = GUICtrlCreateCheckbox(GetTranslation($Lang, "download", "06"), 152, 101, 490, 26)
+  $Checkbox110 = GUICtrlCreateCheckbox(GetTranslation($Lang, "download", "07"), 152, 125, 490, 26)
+  $Checkbox120 = GUICtrlCreateCheckbox(GetTranslation($Lang, "download", "08"), 152, 149, 490, 26)
+  $Checkbox130 = GUICtrlCreateCheckbox(GetTranslation($Lang, "download", "09"), 152, 173, 490, 26)
+  $Checkbox140 = GUICtrlCreateCheckbox(GetTranslation($Lang, "download", "10"), 152, 197, 490, 26)
   GUICtrlSetState($Checkbox120, $GUI_CHECKED)
   GUICtrlSetState($Checkbox130, $GUI_CHECKED)
 
@@ -1717,12 +1717,12 @@ EndFunc
 Func Stop_VirtualBox()
 	Local $arch_app = (FileExists(@ScriptDir & "\app64\") And (@OSArch = "x64" Or Not FileExists(@ScriptDir & "\app32\")) ? "app64" : "app32")
 
-    Local $DRV = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxDrv", "ImagePath") <> "" ? 1 : 0)
-    Local $SUP = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxSup", "ImagePath") <> "" ? 1 : 0)
-    Local $USB = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxUSB", "ImagePath") <> "" ? 1 : 0)
-    Local $MON = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxUSBMon", "ImagePath") <> "" ? 1 : 0)
-    Local $ADP = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxNetAdp", "ImagePath") <> "" ? 1 : 0)
-	Local $NET = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxNetFlt", "ImagePath") <> "" Or RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxNetLwf", "ImagePath") <> "" ? 1 : 0)
+    Local $DRV = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxDrv", "DisplayName") <> "" ? 1 : 0)
+    Local $SUP = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxSup", "DisplayName") <> "" ? 1 : 0)
+    Local $USB = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxUSB", "DisplayName") <> "" ? 1 : 0)
+    Local $MON = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxUSBMon", "DisplayName") <> "" ? 1 : 0)
+    Local $ADP = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxNetAdp", "DisplayName") <> "" ? 1 : 0)
+	Local $NET = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxNetFlt", "DisplayName") <> "" Or RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxNetLwf", "DisplayName") <> "" ? 1 : 0)
 
     Local $ADPVER = (FileExists(@ScriptDir & "\" & $arch_app & "\drivers\network\netadp6") ? 6 : "")
 
