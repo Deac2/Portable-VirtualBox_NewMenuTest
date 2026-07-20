@@ -1019,8 +1019,7 @@ Func UpdateTabSystem()
                 If GUICtrlRead($Label_Net) <> "Net_Drv" Then GUICtrlSetData($Label_Net, "Net_Drv")
             EndIf
         ElseIf $aServices[$i][0] = "COM_API" Then
-            Local $COM_API_VirtualBox = ObjCreate("VirtualBox.VirtualBox")
-            If IsObj($COM_API_VirtualBox) Then
+            If IsObj(ObjCreate("VirtualBox.VirtualBox")) Then
                 $sCurrentStatus = "R"
             Else
                 $sCurrentStatus = "-"
@@ -1811,9 +1810,6 @@ Func Stop_VirtualBox()
 EndFunc
 
 Func Start_VirtualBox()
-    Local $arch = (FileExists(@ScriptDir & "\app64\") And (@OSArch = "x64" Or Not FileExists(@ScriptDir & "\app32\")) ? "app64" : "app32")
-    Local $arch = (@OSArch <> "x86" ? "x64" : "x86")
-
     If FileExists(@ScriptDir & "\" & $arch & "\drivers\vboxdrv") And RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxDRV", "DisplayName") <> "Portable VBoxDRV" Then
         RunWait("cmd /c sc create VBoxDRV binpath= ""%CD%\" & $arch & "\drivers\VBoxDrv\VBoxDrv.sys"" type= kernel start= auto error= normal displayname=""Portable VBoxDRV""", @ScriptDir, @SW_HIDE)
         RunWait("sc start VBoxDRV", @ScriptDir, @SW_HIDE)
