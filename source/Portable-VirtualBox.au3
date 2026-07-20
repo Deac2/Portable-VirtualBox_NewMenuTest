@@ -987,7 +987,7 @@ Func UpdateTabSystem()
         ["VBoxNetAdp", 220], _
         ["VBoxUSBMon", 290], _
         ["VBoxUSB", 360], _
-        ["VBoxSVC", 430] _
+        ["COM_API", 430] _
     ]
 
 	For $i = 0 To UBound($aServices) - 1
@@ -1018,6 +1018,17 @@ Func UpdateTabSystem()
                 $sCurrentStatus = "-"
                 If GUICtrlRead($Label_Net) <> "Net_Drv" Then GUICtrlSetData($Label_Net, "Net_Drv")
             EndIf
+        ElseIf $aServices[$i][0] = "COM_API" Then
+            Local $COM_API_VirtualBox = ObjCreate("VirtualBox.VirtualBox")
+            If IsObj($COM_API_VirtualBox) Then
+                $sCurrentStatus = "R"
+            Else
+                $sCurrentStatus = "-"
+            EndIf
+        Else
+            $sCurrentStatus = Get_Service_Status($aServices[$i][0])
+        EndIf
+#cs
         ElseIf $aServices[$i][0] = "VBoxSVC" Then
 			Local $sRoot = (@OSArch = "x64" ? "HKLM64" : "HKLM")
             Local $sReg = RegRead($sRoot&"\SOFTWARE\Classes\CLSID\{0bb3b78c-1807-4249-5ba5-ea42d66af0bf}\InprocServer32", "")
@@ -1029,6 +1040,7 @@ Func UpdateTabSystem()
         Else
             $sCurrentStatus = Get_Service_Status($aServices[$i][0])
         EndIf
+#ce
 
         If $sCurrentStatus = $aLastStatus[$i] Then ContinueLoop
         $aLastStatus[$i] = $sCurrentStatus
