@@ -40,7 +40,7 @@ Global $DefaultUserHome = @ScriptDir&"\.VirtualBox"
 Global $DefaultMachineFolder = @ScriptDir&"\.VirtualBox\Machines"
 Global $32Bit_Last = "6.0.24"
 Global $version = "6.4.9.1"
-Global $Lang_changes = "17.07.2026"
+Global $Lang_changes = "20.07.2026"
 Global $MaxRetries = "3"		;Maximum number of retries when downloading files from https://download.virtualbox.org/virtualbox/
 Global $Radio1, $Radio2, $Radio3, $Radio4, $Radio5, $Radio6, $Radio7, $Radio8, $Radio9, $Radio10, $Radio11, $Radio12, $Radio13, $Radio14
 Global $Checkbox01, $Checkbox02, $Checkbox03, $Checkbox04, $Checkbox05, $Checkbox06, $Checkbox07, $Checkbox08, $Checkbox09
@@ -661,8 +661,8 @@ Func _LogDuplicate($Linetext)
         Return
     EndIf
     Local $uuid = _StringBetween($Linetext, 'uuid="', '"')
-    FileWrite($hFile, "Duplicate found with UUID: " & $uuid[0] & @LF)
-    FileWrite($hFile, "Duplicate line: " & $Linetext & @LF)
+    FileWrite($hFile, "[" & @MDAY & "." & @MON & "." & @YEAR & " " & @HOUR & ":" & @MIN & ":" & @SEC & "] Duplicate found with UUID: " & $uuid[0] & @LF)
+    FileWrite($hFile, "[" & @MDAY & "." & @MON & "." & @YEAR & " " & @HOUR & ":" & @MIN & ":" & @SEC & "] Duplicate line: " & $Linetext & @LF)
     FileWrite($hFile, "----------------------------------------" & @LF)
     FileClose($hFile)
 EndFunc
@@ -1866,10 +1866,7 @@ Func Start_VirtualBox()
     RunWait($arch_app & "\VBoxSVC.exe /reregserver", @ScriptDir, @SW_HIDE)
     RunWait(@SystemDir & "\regsvr32.exe /S " & $arch_app & "\VBoxC.dll", @ScriptDir, @SW_HIDE)
     RunWait(@SystemDir & "\regsvr32.exe /S " & $arch_app & "\VBoxProxyStub.dll", @ScriptDir, @SW_HIDE)
-
-    If FileExists(@ScriptDir & "\" & $arch_app & "\VBoxRT.dll") Then
-        DllCall(@ScriptDir & "\" & $arch_app & "\VBoxRT.dll", "int", "RTR3Init")
-    EndIf
+	DllCall(@ScriptDir & "\" & $arch_app & "\VBoxRT.dll", "int", "RTR3Init")
 EndFunc
 
 Func ReStart_VirtualBox()
