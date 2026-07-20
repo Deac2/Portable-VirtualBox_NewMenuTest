@@ -1714,8 +1714,6 @@ Func ProcessNameClose($ProcessName)
 EndFunc
 
 Func Stop_VirtualBox()
-	Local $arch_app = (FileExists(@ScriptDir & "\app64\") And (@OSArch = "x64" Or Not FileExists(@ScriptDir & "\app32\")) ? "app64" : "app32")
-
     Local $DRV = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxDrv", "DisplayName") <> "" ? 1 : 0)
     Local $SUP = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxSup", "DisplayName") <> "" ? 1 : 0)
     Local $USB = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxUSB", "DisplayName") <> "" ? 1 : 0)
@@ -1723,12 +1721,12 @@ Func Stop_VirtualBox()
     Local $ADP = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxNetAdp", "DisplayName") <> "" ? 1 : 0)
 	Local $NET = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxNetFlt", "DisplayName") <> "" Or RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxNetLwf", "DisplayName") <> "" ? 1 : 0)
 
-    Local $ADPVER = (FileExists(@ScriptDir & "\" & $arch_app & "\drivers\network\netadp6") ? 6 : "")
+    Local $ADPVER = (FileExists(@ScriptDir & "\" & $arch & "\drivers\network\netadp6") ? 6 : "")
 
-    RunWait($arch_app & "\VBoxSVC.exe /unregserver", @ScriptDir, @SW_HIDE)
-    RunWait(@SystemDir & "\regsvr32.exe /S /U " & $arch_app & "\VBoxC.dll", @ScriptDir, @SW_HIDE)
-    RunWait($arch_app & "\VBoxSDS.exe /UnregService", @ScriptDir, @SW_HIDE)
-    RunWait(@SystemDir & "\regsvr32.exe /S /U " & $arch_app & "\VBoxProxyStub.dll", @ScriptDir, @SW_HIDE)
+    RunWait($arch & "\VBoxSVC.exe /unregserver", @ScriptDir, @SW_HIDE)
+    RunWait(@SystemDir & "\regsvr32.exe /S /U " & $arch & "\VBoxC.dll", @ScriptDir, @SW_HIDE)
+    RunWait($arch & "\VBoxSDS.exe /UnregService", @ScriptDir, @SW_HIDE)
+    RunWait(@SystemDir & "\regsvr32.exe /S /U " & $arch & "\VBoxProxyStub.dll", @ScriptDir, @SW_HIDE)
 
     If $DRV = 1 Then
         RunWait("sc stop VBoxDRV", @ScriptDir, @SW_HIDE)
@@ -1740,7 +1738,8 @@ Func Stop_VirtualBox()
 
     If $USB = 1 Then
         RunWait("sc stop VBoxUSB", @ScriptDir, @SW_HIDE)
-        RunWait(@ScriptDir & "\data\tools\devcon_" & StringLower(@OSArch) & ".exe remove ""USB\VID_80EE&PID_CAFE""", @ScriptDir, @SW_HIDE)
+        ;RunWait(@ScriptDir & "\data\tools\devcon_" & StringLower(@OSArch) & ".exe remove ""USB\VID_80EE&PID_CAFE""", @ScriptDir, @SW_HIDE)
+		RunWait("""" & @ScriptDir & "\data\tools\devcon_" & StringLower(@OSArch) & ".exe"" remove ""USB\VID_80EE&PID_CAFE""", @ScriptDir, @SW_HIDE)
         FileDelete(@WindowsDir & "\System32\drivers\VBoxUSB.sys")
     EndIf
 
@@ -1750,15 +1749,18 @@ Func Stop_VirtualBox()
 
     If $ADP = 1 Then
         RunWait("sc stop VBoxNetAdp", @ScriptDir, @SW_HIDE)
-        RunWait(@ScriptDir & "\data\tools\devcon_" & StringLower(@OSArch) & ".exe remove ""sun_VBoxNetAdp""", @ScriptDir, @SW_HIDE)
+		RunWait("""" & @ScriptDir & "\data\tools\devcon_" & StringLower(@OSArch) & ".exe"" remove ""sun_VBoxNetAdp""", @ScriptDir, @SW_HIDE)
+        ;RunWait(@ScriptDir & "\data\tools\devcon_" & StringLower(@OSArch) & ".exe remove ""sun_VBoxNetAdp""", @ScriptDir, @SW_HIDE)
         FileDelete(@WindowsDir & "\System32\drivers\VBoxNetAdp" & $ADPVER & ".sys")
     EndIf
 
     If $NET = 1 Then
         RunWait("sc stop VBoxNetFlt", @ScriptDir, @SW_HIDE)
         RunWait("sc stop VBoxNetLwf", @ScriptDir, @SW_HIDE)
-        RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -u ""sun_VBoxNetFlt""", @ScriptDir, @SW_HIDE)
-        RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -u ""oracle_VBoxNetLwf""", @ScriptDir, @SW_HIDE)
+        ;RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -u ""sun_VBoxNetFlt""", @ScriptDir, @SW_HIDE)
+        ;RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -u ""oracle_VBoxNetLwf""", @ScriptDir, @SW_HIDE)
+		RunWait("""" & @ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe"" -v -u ""sun_VBoxNetFlt""", @ScriptDir, @SW_HIDE)
+		RunWait("""" & @ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe"" -v -u ""oracle_VBoxNetLwf""", @ScriptDir, @SW_HIDE)
         RunWait(@SystemDir & "\regsvr32.exe /S /U " & @WindowsDir & "\System32\VBoxNetFltNobj.dll", @ScriptDir, @SW_HIDE)
         RunWait("sc delete VBoxNetFlt", @ScriptDir, @SW_HIDE)
         RunWait("sc delete VBoxNetLwf", @ScriptDir, @SW_HIDE)
@@ -1767,11 +1769,11 @@ Func Stop_VirtualBox()
         FileDelete(@WindowsDir & "\System32\drivers\VBoxNetLwf.sys")
     EndIf
 
-    If FileExists(@ScriptDir & "\" & $arch_app & "\") And FileExists(@ScriptDir & "\vboxadditions\") Then
-        DirMove(@ScriptDir & "\" & $arch_app & "\doc", @ScriptDir & "\vboxadditions\", 1)
-        DirMove(@ScriptDir & "\" & $arch_app & "\ExtensionPacks", @ScriptDir & "\vboxadditions\", 1)
-        DirMove(@ScriptDir & "\" & $arch_app & "\nls", @ScriptDir & "\vboxadditions\", 1)
-        FileMove(@ScriptDir & "\" & $arch_app & "\*.iso", @ScriptDir & "\vboxadditions\guestadditions\", 9)
+    If FileExists(@ScriptDir & "\" & $arch & "\") And FileExists(@ScriptDir & "\vboxadditions\") Then
+        DirMove(@ScriptDir & "\" & $arch & "\doc", @ScriptDir & "\vboxadditions\", 1)
+        DirMove(@ScriptDir & "\" & $arch & "\ExtensionPacks", @ScriptDir & "\vboxadditions\", 1)
+        DirMove(@ScriptDir & "\" & $arch & "\nls", @ScriptDir & "\vboxadditions\", 1)
+        FileMove(@ScriptDir & "\" & $arch & "\*.iso", @ScriptDir & "\vboxadditions\guestadditions\", 9)
     EndIf
 
     If FileExists(@SystemDir & "\msvcp71.dll") Then FileDelete(@SystemDir & "\msvcp71.dll")
@@ -1809,64 +1811,73 @@ Func Stop_VirtualBox()
 EndFunc
 
 Func Start_VirtualBox()
-    Local $arch_app = (FileExists(@ScriptDir & "\app64\") And (@OSArch = "x64" Or Not FileExists(@ScriptDir & "\app32\")) ? "app64" : "app32")
-    Local $arch = (@OSArch = "x64" ? "x64" : "x86")
+    Local $arch = (FileExists(@ScriptDir & "\app64\") And (@OSArch = "x64" Or Not FileExists(@ScriptDir & "\app32\")) ? "app64" : "app32")
+    Local $arch = (@OSArch <> "x86" ? "x64" : "x86")
 
-    If FileExists(@ScriptDir & "\" & $arch_app & "\drivers\vboxdrv") And RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxDRV", "DisplayName") <> "VirtualBox Service" Then
-        RunWait("cmd /c sc create VBoxDRV binpath= ""%CD%\" & $arch_app & "\drivers\VBoxDrv\VBoxDrv.sys"" type= kernel start= auto error= normal displayname= PortableVBoxDRV", @ScriptDir, @SW_HIDE)
+    If FileExists(@ScriptDir & "\" & $arch & "\drivers\vboxdrv") And RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxDRV", "DisplayName") <> "Portable VBoxDRV" Then
+        RunWait("cmd /c sc create VBoxDRV binpath= ""%CD%\" & $arch & "\drivers\VBoxDrv\VBoxDrv.sys"" type= kernel start= auto error= normal displayname=""Portable VBoxDRV""", @ScriptDir, @SW_HIDE)
         RunWait("sc start VBoxDRV", @ScriptDir, @SW_HIDE)
     EndIf
 
-    If FileExists(@ScriptDir & "\" & $arch_app & "\drivers\vboxsup") And RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxSUP", "DisplayName") <> "VirtualBox Service" Then
-        RunWait("cmd /c sc create VBoxSUP binpath= ""%CD%\" & $arch_app & "\drivers\VBoxSup\VBoxSup.sys"" type= kernel start= auto error= normal displayname= PortableVBoxSUP", @ScriptDir, @SW_HIDE)
+    If FileExists(@ScriptDir & "\" & $arch & "\drivers\vboxsup") And RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxSUP", "DisplayName") <> "Portable VBoxSUP" Then
+        RunWait("cmd /c sc create VBoxSUP binpath= ""%CD%\" & $arch & "\drivers\VBoxSup\VBoxSup.sys"" type= kernel start= auto error= normal displayname=""Portable VBoxSUP""", @ScriptDir, @SW_HIDE)
         RunWait("sc start VBoxSUP", @ScriptDir, @SW_HIDE)
     EndIf
 
-    If RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxUSBMon", "DisplayName") <> "VirtualBox USB Monitor Driver" Then
-        RunWait("cmd /c sc create VBoxUSBMon binpath= ""%CD%\" & $arch_app & "\drivers\USB\filter\VBoxUSBMon.sys"" type= kernel start= auto error= normal displayname= PortableVBoxUSBMon", @ScriptDir, @SW_HIDE)
+    If RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxUSBMon", "DisplayName") <> "Portable VirtualBox USB Monitor Driver" Then
+        RunWait("cmd /c sc create VBoxUSBMon binpath= ""%CD%\" & $arch & "\drivers\USB\filter\VBoxUSBMon.sys"" type= kernel start= auto error= normal displayname=""Portable VirtualBox USB Monitor Driver""", @ScriptDir, @SW_HIDE)
         RunWait("sc start VBoxUSBMon", @ScriptDir, @SW_HIDE)
     EndIf
 
     If IniRead($var1, "usb", "key", "NotFound") = 1 Then
-        If RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxUSB", "DisplayName") <> "VirtualBox USB" Then
-            RunWait(@ScriptDir & "\data\tools\devcon_" & StringLower(@OSArch) & ".exe install " & $arch_app & "\drivers\USB\device\VBoxUSB.inf ""USB\VID_80EE&PID_CAFE""", @ScriptDir, @SW_HIDE)
-            FileCopy(@ScriptDir & "\" & $arch_app & "\drivers\USB\device\VBoxUSB.sys", @WindowsDir & "\System32\drivers", 9)
+		If StringInStr(RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxUSB", "DisplayName"), "VBoxUSB") = 0 Then
+        ;If RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxUSB", "DisplayName") <> "VirtualBox USB" Then
+            ;RunWait(@ScriptDir & "\data\tools\devcon_" & StringLower(@OSArch) & ".exe install " & $arch & "\drivers\USB\device\VBoxUSB.inf ""USB\VID_80EE&PID_CAFE""", @ScriptDir, @SW_HIDE)
+			RunWait("""" & @ScriptDir & "\data\tools\devcon_" & StringLower(@OSArch) & ".exe"" install """ & $arch & "\drivers\USB\device\VBoxUSB.inf"" ""USB\VID_80EE&PID_CAFE""", @ScriptDir, @SW_HIDE)
+            FileCopy(@ScriptDir & "\" & $arch & "\drivers\USB\device\VBoxUSB.sys", @WindowsDir & "\System32\drivers", 9)
             RunWait("sc start VBoxUSB", @ScriptDir, @SW_HIDE)
         EndIf
     EndIf
 
     If IniRead($var1, "net", "key", "NotFound") = 1 Then
-        Local $ADPVER = (FileExists(@ScriptDir & "\" & $arch_app & "\drivers\network\netadp6") ? 6 : "")
-        If RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxNetAdp", "DisplayName") <> "VirtualBox Host-Only Network Adapter" Then
-            RunWait(@ScriptDir & "\data\tools\devcon_" & StringLower(@OSArch) & ".exe install " & $arch_app & "\drivers\network\netadp" & $ADPVER & "\VBoxNetAdp" & $ADPVER & ".inf ""sun_VBoxNetAdp""", @ScriptDir, @SW_HIDE)
-            FileCopy(@ScriptDir & "\" & $arch_app & "\drivers\network\netadp" & $ADPVER & "\VBoxNetAdp" & $ADPVER & ".sys", @WindowsDir & "\System32\drivers", 9)
+        Local $ADPVER = (FileExists(@ScriptDir & "\" & $arch & "\drivers\network\netadp6") ? 6 : "")
+		If StringInStr(RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxNetAdp", "DisplayName"), "VBoxNetAdp") = 0 Then
+        ;If RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxNetAdp", "DisplayName") <> "VirtualBox Host-Only Network Adapter" Then
+            ;RunWait(@ScriptDir & "\data\tools\devcon_" & StringLower(@OSArch) & ".exe install " & $arch & "\drivers\network\netadp" & $ADPVER & "\VBoxNetAdp" & $ADPVER & ".inf ""sun_VBoxNetAdp""", @ScriptDir, @SW_HIDE)
+			RunWait("""" & @ScriptDir & "\data\tools\devcon_" & StringLower(@OSArch) & ".exe"" install """ & $arch & "\drivers\network\netadp" & $ADPVER & "\VBoxNetAdp" & $ADPVER & ".inf"" ""sun_VBoxNetAdp""", @ScriptDir, @SW_HIDE)
+            FileCopy(@ScriptDir & "\" & $arch & "\drivers\network\netadp" & $ADPVER & "\VBoxNetAdp" & $ADPVER & ".sys", @WindowsDir & "\System32\drivers", 9)
             RunWait("sc start VBoxNetAdp", @ScriptDir, @SW_HIDE)
         EndIf
     EndIf
 
     If IniRead($var1, "net", "key", "NotFound") = 1 Then
-        If RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxNetFlt", "DisplayName") <> "VBoxNetFlt Service" Then
-            RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -u ""sun_VBoxNetFlt""", @ScriptDir, @SW_HIDE)
-            RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -l " & $arch_app & "\drivers\network\netflt\VBoxNetFlt.inf -m " & $arch_app & "\drivers\network\netflt\VBoxNetFlt.inf -c s -i ""sun_VBoxNetFlt""", @ScriptDir, @SW_HIDE)
-            RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -u ""oracle_VBoxNetLwf""", @ScriptDir, @SW_HIDE)
-            RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -l " & $arch_app & "\drivers\network\netlwf\VBoxNetLwf.inf -m " & $arch_app & "\drivers\network\netlwf\VBoxNetLwf.inf -c s -i ""oracle_VBoxNetLwf""", @ScriptDir, @SW_HIDE)
-            
-            FileCopy(@ScriptDir & "\" & $arch_app & "\drivers\network\netflt\VBoxNetFltNobj.dll", @WindowsDir & "\System32", 9)
-            FileCopy(@ScriptDir & "\" & $arch_app & "\drivers\network\netflt\VBoxNetFlt.sys", @WindowsDir & "\System32\drivers", 9)
+        ;If RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxNetFlt", "DisplayName") <> "VBoxNetFlt Service" Then
+		If StringInStr(RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxNetFlt", "DisplayName"), "VBoxNetFlt") = 0 Then
+			;MsgBox(0, "", "test")
+            ;RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -u ""sun_VBoxNetFlt""", @ScriptDir, @SW_HIDE)
+			RunWait("""" & @ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe"" -v -u ""sun_VBoxNetFlt""", @ScriptDir, @SW_HIDE)
+            ;RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -l " & $arch & "\drivers\network\netflt\VBoxNetFlt.inf -m " & $arch & "\drivers\network\netflt\VBoxNetFlt.inf -c s -i ""sun_VBoxNetFlt""", @ScriptDir, @SW_HIDE)
+			RunWait("""" & @ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe"" -v -l """ & $arch & "\drivers\network\netflt\VBoxNetFlt.inf"" -m """ & $arch & "\drivers\network\netflt\VBoxNetFlt.inf"" -c s -i sun_VBoxNetFlt", @ScriptDir, @SW_HIDE)
+            FileCopy(@ScriptDir & "\" & $arch & "\drivers\network\netflt\VBoxNetFltNobj.dll", @WindowsDir & "\System32", 9)
+            FileCopy(@ScriptDir & "\" & $arch & "\drivers\network\netflt\VBoxNetFlt.sys", @WindowsDir & "\System32\drivers", 9)
             RunWait(@SystemDir & "\regsvr32.exe /S " & @WindowsDir & "\System32\VBoxNetFltNobj.dll", @WindowsDir & "\System32", @SW_HIDE)
-            FileCopy(@ScriptDir & "\" & $arch_app & "\drivers\network\netlwf\VBoxNetLwf.sys", @WindowsDir & "\System32\drivers", 9)
-            
             RunWait("sc start VBoxNetFlt", @ScriptDir, @SW_HIDE)
-            RunWait("sc start VBoxNetLwf", @ScriptDir, @SW_HIDE)
+        EndIf
+		If StringInStr(RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxNetLwf", "DisplayName"), "VBoxNetLwf") = 0 Then
+            ;RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -u ""oracle_VBoxNetLwf""", @ScriptDir, @SW_HIDE)
+			RunWait("""" & @ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe"" -v -u ""oracle_VBoxNetLwf""", @ScriptDir, @SW_SHOW)
+            ;RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -l " & $arch & "\drivers\network\netlwf\VBoxNetLwf.inf -m " & $arch & "\drivers\network\netlwf\VBoxNetLwf.inf -c s -i ""oracle_VBoxNetLwf""", @ScriptDir, @SW_HIDE)
+			RunWait("""" & @ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe"" -v -l """ & $arch & "\drivers\network\netlwf\VBoxNetLwf.inf"" -m """ & $arch & "\drivers\network\netlwf\VBoxNetLwf.inf"" -c s -i oracle_VBoxNetLwf", @ScriptDir, @SW_HIDE)
+			FileCopy(@ScriptDir & "\" & $arch & "\drivers\network\netlwf\VBoxNetLwf.sys", @WindowsDir & "\System32\drivers", 9)
+			RunWait("sc start VBoxNetLwf", @ScriptDir, @SW_HIDE)
         EndIf
     EndIf
 
-
-    RunWait($arch_app & "\VBoxSDS.exe /RegService", @ScriptDir, @SW_HIDE)
-    RunWait($arch_app & "\VBoxSVC.exe /reregserver", @ScriptDir, @SW_HIDE)
-    RunWait(@SystemDir & "\regsvr32.exe /S " & $arch_app & "\VBoxC.dll", @ScriptDir, @SW_HIDE)
-    RunWait(@SystemDir & "\regsvr32.exe /S " & $arch_app & "\VBoxProxyStub.dll", @ScriptDir, @SW_HIDE)
-	DllCall(@ScriptDir & "\" & $arch_app & "\VBoxRT.dll", "int", "RTR3Init")
+    RunWait($arch & "\VBoxSDS.exe /RegService", @ScriptDir, @SW_HIDE)
+    RunWait($arch & "\VBoxSVC.exe /reregserver", @ScriptDir, @SW_HIDE)
+    RunWait(@SystemDir & "\regsvr32.exe /S " & $arch & "\VBoxC.dll", @ScriptDir, @SW_HIDE)
+    RunWait(@SystemDir & "\regsvr32.exe /S " & $arch & "\VBoxProxyStub.dll", @ScriptDir, @SW_HIDE)
+	DllCall(@ScriptDir & "\" & $arch & "\VBoxRT.dll", "int", "RTR3Init")
 EndFunc
 
 Func ReStart_VirtualBox()
