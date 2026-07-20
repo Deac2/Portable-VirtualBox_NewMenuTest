@@ -1028,19 +1028,6 @@ Func UpdateTabSystem()
         Else
             $sCurrentStatus = Get_Service_Status($aServices[$i][0])
         EndIf
-#cs
-        ElseIf $aServices[$i][0] = "VBoxSVC" Then
-			Local $sRoot = (@OSArch = "x64" ? "HKLM64" : "HKLM")
-            Local $sReg = RegRead($sRoot&"\SOFTWARE\Classes\CLSID\{0bb3b78c-1807-4249-5ba5-ea42d66af0bf}\InprocServer32", "")
-            If $sReg <> "" And ProcessExists("VBoxSVC.exe") Then
-                $sCurrentStatus = "R"
-            Else
-                $sCurrentStatus = "-"
-            EndIf
-        Else
-            $sCurrentStatus = Get_Service_Status($aServices[$i][0])
-        EndIf
-#ce
 
         If $sCurrentStatus = $aLastStatus[$i] Then ContinueLoop
         $aLastStatus[$i] = $sCurrentStatus
