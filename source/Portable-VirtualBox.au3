@@ -1853,7 +1853,6 @@ Func Start_VirtualBox()
     If IniRead($var1, "net", "key", "NotFound") = 1 Then
         ;If RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxNetFlt", "DisplayName") <> "VBoxNetFlt Service" Then
 		If StringInStr(RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxNetFlt", "DisplayName"), "VBoxNetFlt") = 0 Then
-			;MsgBox(0, "", "test")
             ;RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -u ""sun_VBoxNetFlt""", @ScriptDir, @SW_HIDE)
 			RunWait("""" & @ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe"" -v -u ""sun_VBoxNetFlt""", @ScriptDir, @SW_HIDE)
             ;RunWait(@ScriptDir & "\data\tools\snetcfg_" & StringLower(@OSArch) & ".exe -v -l " & $arch & "\drivers\network\netflt\VBoxNetFlt.inf -m " & $arch & "\drivers\network\netflt\VBoxNetFlt.inf -c s -i ""sun_VBoxNetFlt""", @ScriptDir, @SW_HIDE)
