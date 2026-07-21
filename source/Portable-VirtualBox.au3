@@ -1008,14 +1008,22 @@ Func UpdateTabSystem()
             Local $StatusLwf = Get_Service_Status("VBoxNetLwf")
             If $StatusLwf Then
                 $sCurrentStatus = $StatusLwf
-				If GUICtrlRead($Label_Net) <> "Net_Lwf" Then GUICtrlSetData($Label_Net, "Net_Lwf")
             EndIf
             Local $StatusFlt = Get_Service_Status("VBoxNetFlt")
             If $StatusFlt Then
                 If $StatusLwf = "-" Or $StatusFlt = "R" Or $StatusFlt = "P" Or $StatusFlt = "?" Then
                     $sCurrentStatus = $StatusFlt
-					If GUICtrlRead($Label_Net) <> "Net_Flt" Then GUICtrlSetData($Label_Net, "Net_Flt")
                 EndIf
+            EndIf
+            If $StatusLwf = "R" And $StatusFlt = "R" Then
+                If GUICtrlRead($Label_Net) <> "Net_ALL" Then GUICtrlSetData($Label_Net, "Net_ALL")
+            ElseIf $StatusLwf = "R" And $StatusFlt <> "R" Then ;VBoxNetLwf
+                If GUICtrlRead($Label_Net) <> "Net_Lwf" Then GUICtrlSetData($Label_Net, "Net_Lwf")
+                
+            ElseIf $StatusLwf <> "R" And $StatusFlt = "R" Then ;VBoxNetFlt
+                If GUICtrlRead($Label_Net) <> "Net_Flt" Then GUICtrlSetData($Label_Net, "Net_Flt")
+            Else
+                If GUICtrlRead($Label_Net) <> "Net_Drv" Then GUICtrlSetData($Label_Net, "Net_Drv")
             EndIf
         ElseIf $aServices[$i][0] = "COM_API" Then
             If IsObj(ObjCreate("VirtualBox.VirtualBox")) Then
