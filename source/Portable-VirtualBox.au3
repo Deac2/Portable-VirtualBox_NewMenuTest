@@ -994,30 +994,28 @@ Func UpdateTabSystem()
 	For $i = 0 To UBound($aServices) - 1
         Local $sCurrentStatus
         If $aServices[$i][0] = "Sup_Drv" Then
-            Local $StatusSup = Get_Service_Status("VBoxSup")
-            Local $StatusDrv = Get_Service_Status("VBoxDrv")
-            If $StatusSup = "R" Or $StatusDrv = "R" Then
-                $sCurrentStatus = "R"
-            Else
-                $sCurrentStatus = "-"
+            Local $VBoxSup = Get_Service_Status("VBoxSup")
+            If $VBoxSup Then
+                $sCurrentStatus = $VBoxSup
+            EndIf
+            Local $VBoxDrv = Get_Service_Status("VBoxDrv")
+            If $VBoxDrv Then
+                If $VBoxSup = "-" Or $VBoxDrv = "R" Or $VBoxDrv = "P" Or $VBoxDrv = "?" Then
+                    $sCurrentStatus = $VBoxDrv
+                EndIf
             EndIf
         ElseIf $aServices[$i][0] = "Net_Drv" Then
-            Local $StatusFlt = Get_Service_Status("VBoxNetFlt")
             Local $StatusLwf = Get_Service_Status("VBoxNetLwf")
-            If $StatusFlt = "R" And $StatusLwf = "R" Then
-                $sCurrentStatus = "R"
-                If GUICtrlRead($Label_Net) <> "Net_All" Then GUICtrlSetData($Label_Net, "Net_All")
-            ElseIf $StatusFlt = "R" And $StatusLwf <> "R" Then
-                $sCurrentStatus = "R"
-                If GUICtrlRead($Label_Net) <> "Net_Flt" Then GUICtrlSetData($Label_Net, "Net_Flt")
-                
-            ElseIf $StatusFlt <> "R" And $StatusLwf = "R" Then
-                $sCurrentStatus = "R"
-                If GUICtrlRead($Label_Net) <> "Net_Lwf" Then GUICtrlSetData($Label_Net, "Net_Lwf")
-                
-            Else
-                $sCurrentStatus = "-"
-                If GUICtrlRead($Label_Net) <> "Net_Drv" Then GUICtrlSetData($Label_Net, "Net_Drv")
+            If $StatusLwf Then
+                $sCurrentStatus = $StatusLwf
+				If GUICtrlRead($Label_Net) <> "Net_Lwf" Then GUICtrlSetData($Label_Net, "Net_Lwf")
+            EndIf
+            Local $StatusFlt = Get_Service_Status("VBoxNetFlt")
+            If $StatusFlt Then
+                If $StatusLwf = "-" Or $StatusFlt = "R" Or $StatusFlt = "P" Or $StatusFlt = "?" Then
+                    $sCurrentStatus = $StatusFlt
+					If GUICtrlRead($Label_Net) <> "Net_Flt" Then GUICtrlSetData($Label_Net, "Net_Flt")
+                EndIf
             EndIf
         ElseIf $aServices[$i][0] = "COM_API" Then
             If IsObj(ObjCreate("VirtualBox.VirtualBox")) Then
