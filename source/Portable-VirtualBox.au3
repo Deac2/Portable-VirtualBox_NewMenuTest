@@ -1192,18 +1192,11 @@ Func Settings()
 	GUICtrlSetOnEvent(-1, "ReStart_VirtualBox")
 	Local $Stop = GUICtrlCreateButton("Stop", 367, 99, 130, 26)
 	GUICtrlSetOnEvent(-1, "Stop_VirtualBox")
+	GUICtrlCreateLabel("", 0, 143, 575, 1, 0x1000) ; —
 	If NOT (FileExists(@ScriptDir & "\app32\") AND FileExists(@ScriptDir & "\app32\virtualbox.exe")) AND NOT (FileExists(@ScriptDir & "\app64\") AND FileExists(@ScriptDir & "\app64\virtualbox.exe")) Then
     GUICtrlSetState($Restart, $GUI_DISABLE)
     GUICtrlSetState($Stop, $GUI_DISABLE)
 	EndIf
-
-If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\app64\virtualbox.exe")) Then
-  If FileExists(@ScriptDir&"\app32\") AND FileExists(@ScriptDir&"\app64\") Then
-GUICtrlSetState($Restart, $GUI_DISABLE)
-GUICtrlSetState($Stop, $GUI_DISABLE)
-Endif
-Endif
-	GUICtrlCreateLabel("", 0, 143, 575, 1, 0x1000) ; —
 
 	$Checkboxsett_200 = GUICtrlCreateCheckbox("", 16, 153, 14, 14)
 	Local $Short_UserHome = StringReplace($UserHome, @ScriptDir&"\", "", 1)
