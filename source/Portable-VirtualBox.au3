@@ -51,7 +51,7 @@ Global $BTNUserHome, $BTNMachineFolder
 Global $HomeRoot, $MachineRoot, $VMStart, $StartLng
 Global $new1 = 0, $new2 = 0, $Settings = 0, $iSort
 Global Const $WS_SYSMENU = 0x80000, $WS_MINIMIZEBOX = 0x20000, $CBS_DROPDOWNLIST = 0x3		; Window Extended Styles
-Global $idTab, $Label_Net, $aLastStatus[6] = ["?", "?", "?", "?", "?", "?"]
+Global $idTab, $Label_Net, $Label_Svc, $aLastStatus[6] = ["?", "?", "?", "?", "?", "?"]
 Global $OsArch = (@OSArch <> "x86" ? "x64" : "x86")
 
 If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\app64\virtualbox.exe")) Then
@@ -1003,7 +1003,7 @@ EndFunc
 
 Func UpdateTabSystem()
     Local Static $aServices = [ _
-        ["Sup_Drv", 80], _
+        ["Svc_Drv", 80], _
         ["Net_Drv", 150], _
         ["VBoxNetAdp", 220], _
         ["VBoxUSBMon", 290], _
@@ -1013,7 +1013,7 @@ Func UpdateTabSystem()
 
 	For $i = 0 To UBound($aServices) - 1
         Local $sCurrentStatus
-        If $aServices[$i][0] = "Sup_Drv" Then
+        If $aServices[$i][0] = "Svc_Drv" Then
             Local $VBoxSup = Get_Service_Status("VBoxSup")
             If $VBoxSup Then
                 $sCurrentStatus = $VBoxSup
@@ -1023,6 +1023,16 @@ Func UpdateTabSystem()
                 If $VBoxSup = "-" Or $VBoxDrv = "R" Or $VBoxDrv = "P" Or $VBoxDrv = "?" Then
                     $sCurrentStatus = $VBoxDrv
                 EndIf
+            EndIf
+            If $VBoxSup = "R" And $VBoxDrv = "R" Then
+                If GUICtrlRead($Label_Svc) <> "Svc_All" Then GUICtrlSetData($Label_Svc, "Svc_All")
+            ElseIf $VBoxSup = "R" And $VBoxDrv <> "R" Then ;VBoxSup
+                If GUICtrlRead($Label_Svc) <> "Svc_Sup" Then GUICtrlSetData($Label_Svc, "Svc_Sup")
+                
+            ElseIf $VBoxSup <> "R" And $VBoxDrv = "R" Then ;VBoxDrv
+                If GUICtrlRead($Label_Svc) <> "Svc_Drv" Then GUICtrlSetData($Label_Svc, "Svc_Drv")
+            Else
+                If GUICtrlRead($Label_Svc) <> "Svc_Drv" Then GUICtrlSetData($Label_Svc, "Svc_Drv")
             EndIf
         ElseIf $aServices[$i][0] = "Net_Drv" Then
             Local $StatusLwf = Get_Service_Status("VBoxNetLwf")
@@ -1036,7 +1046,7 @@ Func UpdateTabSystem()
                 EndIf
             EndIf
             If $StatusLwf = "R" And $StatusFlt = "R" Then
-                If GUICtrlRead($Label_Net) <> "Net_ALL" Then GUICtrlSetData($Label_Net, "Net_ALL")
+                If GUICtrlRead($Label_Net) <> "Net_All" Then GUICtrlSetData($Label_Net, "Net_All")
             ElseIf $StatusLwf = "R" And $StatusFlt <> "R" Then ;VBoxNetLwf
                 If GUICtrlRead($Label_Net) <> "Net_Lwf" Then GUICtrlSetData($Label_Net, "Net_Lwf")
                 
@@ -1178,7 +1188,7 @@ Func Settings()
 
 	GUICtrlCreateTabItem(GetTranslation($Lang, "system", "01"))
 	GUISetFont(9, 400, 0, "Segoe UI")
-    GUICtrlCreateLabel("Sup_Drv",  80, 35, 60, 15, BitOR(0x01, 0x0200))
+    $Label_Svc = GUICtrlCreateLabel("Svc_Drv",  80, 35, 60, 15, BitOR(0x01, 0x0200))
     $Label_Net = GUICtrlCreateLabel("Net_Drv",  150, 35, 60, 15, BitOR(0x01, 0x0200))
     GUICtrlCreateLabel("Net_Adp", 220, 35, 60, 15, BitOR(0x01, 0x0200))
     GUICtrlCreateLabel("USB_Mon", 290, 35, 60, 15, BitOR(0x01, 0x0200))
