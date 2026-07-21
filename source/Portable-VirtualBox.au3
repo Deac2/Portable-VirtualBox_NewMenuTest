@@ -1745,7 +1745,6 @@ Func Stop_VirtualBox()
     Local $ADP = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxNetAdp", "DisplayName") <> "" ? 1 : 0)
 	Local $NET = (RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxNetFlt", "DisplayName") <> "" Or RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxNetLwf", "DisplayName") <> "" ? 1 : 0)
 
-	MsgBox(0, "", $App_Dir)
     Local $ADPVER = (FileExists(@ScriptDir & "\" & $App_Dir & "\drivers\network\netadp6") ? 6 : "")
 
     RunWait($App_Dir & "\VBoxSVC.exe /unregserver", @ScriptDir, @SW_HIDE)
