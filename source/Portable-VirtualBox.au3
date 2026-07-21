@@ -54,6 +54,7 @@ Global Const $WS_SYSMENU = 0x80000, $WS_MINIMIZEBOX = 0x20000, $CBS_DROPDOWNLIST
 Global $idTab, $Label_Net, $aLastStatus[6] = ["?", "?", "?", "?", "?", "?"]
 Global $OsArch = (@OSArch <> "x86" ? "x64" : "x86")
 
+If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\app64\virtualbox.exe")) Then
   If FileExists(@ScriptDir&"\app32\") AND FileExists(@ScriptDir&"\app64\") Then
     If @OSArch = "x86" Then
       Global $App_Dir = "app32"
@@ -69,6 +70,7 @@ Global $OsArch = (@OSArch <> "x86" ? "x64" : "x86")
       Global $App_Dir = "app64"
     EndIf
   EndIf
+EndIf
 
 #cs
 If NOT FileExists(@ScriptDir&"\data\tools") Then DirCreate(@ScriptDir&"\data\tools")
@@ -1186,10 +1188,21 @@ Func Settings()
 	GUICtrlCreateLabel("", 287, 80, 1, 64, 0x1000) ; |
 
 	GUISetFont(9, 400, 0, "Arial")
-	GUICtrlCreateButton("Restart", 79, 99, 130, 26)
+	Local $Restart = GUICtrlCreateButton("Restart", 79, 99, 130, 26)
 	GUICtrlSetOnEvent(-1, "ReStart_VirtualBox")
-	GUICtrlCreateButton("Stop", 367, 99, 130, 26)
+	Local $Stop = GUICtrlCreateButton("Stop", 367, 99, 130, 26)
 	GUICtrlSetOnEvent(-1, "Stop_VirtualBox")
+	If NOT (FileExists(@ScriptDir & "\app32\") AND FileExists(@ScriptDir & "\app32\virtualbox.exe")) AND NOT (FileExists(@ScriptDir & "\app64\") AND FileExists(@ScriptDir & "\app64\virtualbox.exe")) Then
+    GUICtrlSetState($Restart, $GUI_DISABLE)
+    GUICtrlSetState($Stop, $GUI_DISABLE)
+	EndIf
+
+If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\app64\virtualbox.exe")) Then
+  If FileExists(@ScriptDir&"\app32\") AND FileExists(@ScriptDir&"\app64\") Then
+GUICtrlSetState($Restart, $GUI_DISABLE)
+GUICtrlSetState($Stop, $GUI_DISABLE)
+Endif
+Endif
 	GUICtrlCreateLabel("", 0, 143, 575, 1, 0x1000) ; —
 
 	$Checkboxsett_200 = GUICtrlCreateCheckbox("", 16, 153, 14, 14)
