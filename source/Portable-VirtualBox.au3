@@ -927,7 +927,7 @@ Func _VM_List_Update()
     
     ; If the current choice is in the list, leave it
     If $foundCurrent Then
-        If (GUICtrlRead($Checkbox24)=4) Then
+        If (GUICtrlRead($Checkboxsett_24)=4) Then
 			GUICtrlSetData($VMStart, $aList[1])
         Else
 			GUICtrlSetData($VMStart, $currentSelection)
@@ -1086,8 +1086,11 @@ Func _OnTabChange()
     Switch $idCurrentTab
         Case 1
             AdlibUnRegister("_UpdateTabSystem")
-            _UpdateSettings()
+            ;_UpdateSettings()
+            ;AdlibRegister("_VM_List_Update", 1000)
+			MsgBox(0, "", "case1")
             AdlibRegister("_VM_List_Update", 1000)
+            _UpdateSettings()
         Case 2
             AdlibUnRegister("_VM_List_Update")
             _UpdateTabSystem()
@@ -1102,6 +1105,7 @@ Func _Settings()
 	If NOT $Settings Then
 	Global $prevList = ""
     Opt("GUIOnEventMode", 1)
+	_OnTabChange()
 
 	Local $WS_SYSMENU = 0x80000
 
