@@ -1086,11 +1086,8 @@ Func _OnTabChange()
     Switch $idCurrentTab
         Case 1
             AdlibUnRegister("_UpdateTabSystem")
-            ;_UpdateSettings()
-            ;AdlibRegister("_VM_List_Update", 1000)
-			MsgBox(0, "", "case1")
-            AdlibRegister("_VM_List_Update", 1000)
             _UpdateSettings()
+            AdlibRegister("_VM_List_Update", 1000)
         Case 2
             AdlibUnRegister("_VM_List_Update")
             _UpdateTabSystem()
