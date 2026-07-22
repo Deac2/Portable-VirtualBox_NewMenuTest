@@ -259,7 +259,7 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
     FileDelete($UserHome&"\VirtualBox.xml-tmp")
   EndIf
 
-If NOT FileExists($UserHome&"\VirtualBox.xml") Then
+  If NOT FileExists($UserHome&"\VirtualBox.xml") Then
 	DirCreate($UserHome)
 	DirCreate($MachineFolder)
     Local $XmlContent = '<?xml version="1.0"?>' & @CRLF & _
@@ -291,8 +291,9 @@ If NOT FileExists($UserHome&"\VirtualBox.xml") Then
 	$file = FileOpen($UserHome&"\VirtualBox.xml", 2 + 8)
 	FileWrite($file,  $XmlContent)
 	FileClose($file)
+
 	Run('cmd /c ""'&@ScriptDir&'\'&$App_Dir&'\VBoxManage.exe" setproperty machinefolder "'&$MachineFolder&'""', @ScriptDir, @SW_HIDE)
-EndIf
+  EndIf
 
   If FileExists($UserHome&"\VirtualBox.xml") Then
     Local $values0, $values1, $values2, $values3, $values4, $values5, $values6, $values7, $values8, $values9, $values10, $values11, $values12, $values13
@@ -416,133 +417,6 @@ EndIf
         SplashTextOn("Portable-VirtualBox", _GetTranslation($Lang, "messages", "06"), 220, 40, -1, -1, 1, "arial", 12)
       EndIf
 
-      If IniRead($var1, "hotkeys", "key", "NotFound") = 1 Then
-        HotKeySet(IniRead($var1, "hotkeys", "01", "NotFound") & IniRead($var1, "hotkeys", "07", "NotFound") & IniRead($var1, "hotkeys", "13", "NotFound") & IniRead($var1, "hotkeys", "19", "NotFound"), "_ShowWindows_VM")
-        HotKeySet(IniRead($var1, "hotkeys", "02", "NotFound") & IniRead($var1, "hotkeys", "08", "NotFound") & IniRead($var1, "hotkeys", "14", "NotFound") & IniRead($var1, "hotkeys", "20", "NotFound"), "_HideWindows_VM")
-        HotKeySet(IniRead($var1, "hotkeys", "03", "NotFound") & IniRead($var1, "hotkeys", "09", "NotFound") & IniRead($var1, "hotkeys", "15", "NotFound") & IniRead($var1, "hotkeys", "21", "NotFound"), "_ShowWindows")
-        HotKeySet(IniRead($var1, "hotkeys", "04", "NotFound") & IniRead($var1, "hotkeys", "10", "NotFound") & IniRead($var1, "hotkeys", "16", "NotFound") & IniRead($var1, "hotkeys", "22", "NotFound"), "_HideWindows")
-        HotKeySet(IniRead($var1, "hotkeys", "05", "NotFound") & IniRead($var1, "hotkeys", "11", "NotFound") & IniRead($var1, "hotkeys", "17", "NotFound") & IniRead($var1, "hotkeys", "23", "NotFound"), "_Settings")
-        HotKeySet(IniRead($var1, "hotkeys", "06", "NotFound") & IniRead($var1, "hotkeys", "12", "NotFound") & IniRead($var1, "hotkeys", "18", "NotFound") & IniRead($var1, "hotkeys", "24", "NotFound"), "_ExitScript")
-
-        Local $ctrl1, $ctrl2, $ctrl3, $ctrl4, $ctrl5, $ctrl6
-        Local $alt1, $alt2, $alt3, $alt4, $alt5, $alt6
-        Local $shift1, $shift2, $shift3, $shift4, $shift5, $shift6
-        Local $plus01, $plus02, $plus03, $plus04, $plus05, $plus06, $plus07, $plus08, $plus09, $plus10, $plus11, $plus12, $plus13, $plus14, $plus15, $plus16, $plus17, $plus18
-
-	If IniRead($var1, "hotkeys", "01", "NotFound") = "^" Then
-          $ctrl1  = "CTRL"
-          $plus01 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "02", "NotFound") = "^" Then
-          $ctrl2  = "CTRL"
-          $plus02 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "03", "NotFound") = "^" Then
-          $ctrl3  = "CTRL"
-          $plus03 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "04", "NotFound") = "^" Then
-          $ctrl4  = "CTRL"
-          $plus04 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "05", "NotFound") = "^" Then
-          $ctrl5  = "CTRL"
-          $plus05 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "06", "NotFound") = "^" Then
-          $ctrl6  = "CTRL"
-          $plus06 = "+"
-        EndIf
-
-        If IniRead($var1, "hotkeys", "07", "NotFound") = "!" Then
-          $alt1   = "ALT"
-          $plus07 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "08", "NotFound") = "!" Then
-          $alt2   = "ALT"
-          $plus08 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "09", "NotFound") = "!" Then
-          $alt3   = "ALT"
-          $plus09 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "10", "NotFound") = "!" Then
-          $alt4   = "ALT"
-          $plus10 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "11", "NotFound") = "!" Then
-          $alt5   = "ALT"
-          $plus11 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "12", "NotFound") = "!" Then
-          $alt6   = "ALT"
-          $plus12 = "+"
-        EndIf
-
-        If IniRead($var1, "hotkeys", "13", "NotFound") = "+" Then
-          $shift1 = "SHIFT"
-          $plus13 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "14", "NotFound") = "+" Then
-          $shift2 = "SHIFT"
-          $plus14 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "15", "NotFound") = "+" Then
-          $shift3 = "SHIFT"
-          $plus15 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "16", "NotFound") = "+" Then
-          $shift4 = "SHIFT"
-          $plus16 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "17", "NotFound") = "+" Then
-          $shift5 = "SHIFT"
-          $plus17 = "+"
-        EndIf
-        If IniRead($var1, "hotkeys", "18", "NotFound") = "+" Then
-          $shift6 = "SHIFT"
-          $plus18 = "+"
-        EndIf
-
-        TrayCreateItem(_GetTranslation($Lang, "tray", "01") &" (" & $ctrl1 & $plus01 & $alt1 & $plus07 & $shift1 & $plus13 & IniRead($var1, "hotkeys", "19", "NotFound") & ")")
-        TrayItemSetOnEvent(-1, "_ShowWindows_VM")
-        TrayCreateItem(_GetTranslation($Lang, "tray", "02") &" (" & $ctrl2 & $plus02 & $alt2 & $plus08 & $shift2 & $plus14 & IniRead($var1, "hotkeys", "20", "NotFound") & ")")
-        TrayItemSetOnEvent(-1, "_HideWindows_VM")
-        TrayCreateItem("")
-        TrayCreateItem(_GetTranslation($Lang, "tray", "03") &" (" & $ctrl3 & $plus03 & $alt3 & $plus09 & $shift3 & $plus15 & IniRead($var1, "hotkeys", "21", "NotFound") & ")")
-        TrayItemSetOnEvent(-1, "_ShowWindows")
-        TrayCreateItem(_GetTranslation($Lang, "tray", "04") &" (" & $ctrl4 & $plus04 & $alt4 & $plus10 & $shift4 & $plus16 & IniRead($var1, "hotkeys", "22", "NotFound") & ")")
-        TrayItemSetOnEvent(-1, "_HideWindows")
-        TrayCreateItem("")
-        TrayCreateItem(_GetTranslation($Lang, "tray", "05") &" (" & $ctrl5 & $plus05 & $alt5 & $plus11 & $shift5 & $plus17 & IniRead($var1, "hotkeys", "23", "NotFound") & ")")
-        TrayItemSetOnEvent(-1, "_Settings")
-        TrayCreateItem("")
-        TrayCreateItem(_GetTranslation($Lang, "tray", "06") &" (" & $ctrl6 & $plus06 & $alt6 & $plus12 & $shift6 & $plus18 & IniRead($var1, "hotkeys", "24", "NotFound") & ")")
-        TrayItemSetOnEvent(-1, "_ExitScript")
-        TraySetState()
-        TraySetToolTip(_GetTranslation($Lang, "tray", "07"))
-        TrayTip("", _GetTranslation($Lang, "tray", "07"), 5)
-      Else
-        TrayCreateItem(_GetTranslation($Lang, "tray", "01"))
-        TrayItemSetOnEvent(-1, "_ShowWindows_VM")
-        TrayCreateItem(_GetTranslation($Lang, "tray", "02"))
-        TrayItemSetOnEvent(-1, "_HideWindows_VM")
-        TrayCreateItem("")
-        TrayCreateItem(_GetTranslation($Lang, "tray", "03"))
-        TrayItemSetOnEvent(-1, "_ShowWindows")
-        TrayCreateItem(_GetTranslation($Lang, "tray", "04"))
-        TrayItemSetOnEvent(-1, "_HideWindows")
-        TrayCreateItem("")
-        TrayCreateItem(_GetTranslation($Lang, "tray", "05"))
-        TrayItemSetOnEvent(-1, "_Settings")
-        TrayCreateItem("")
-        TrayCreateItem(_GetTranslation($Lang, "tray", "06"))
-        TrayItemSetOnEvent(-1, "_ExitScript")
-        TraySetState()
-        TraySetToolTip(_GetTranslation($Lang, "tray", "07"))
-        TrayTip("", _GetTranslation($Lang, "tray", "07"), 5)
-      EndIf
-
       If @OSArch = "x86" Then
         If NOT FileExists(@SystemDir&"\msvcp71.dll") OR NOT FileExists(@SystemDir&"\msvcr71.dll") OR NOT FileExists(@SystemDir&"\msvcrt.dll") Then
           FileCopy(@ScriptDir&"\app32\msvcp71.dll", @SystemDir, 9)
@@ -571,9 +445,9 @@ EndIf
         FileMove(@ScriptDir&"\vboxadditions\guestadditions\*.*", @ScriptDir&"\"&$App_Dir&"\", 9)
       Endif
 
+	_Start_VirtualBox()
+	_CfgTrayMenu()
       SplashOff()
-
-	  _Start_VirtualBox()
 
       If $CmdLine[0] = 1 Then
         If FileExists($UserHome) Then
@@ -1734,6 +1608,135 @@ Else
 _EmptyIniWrite($var1, "lang", "key", "1", $ini_encoding)
 Endif
 $cl = 0
+EndFunc
+
+Func _CfgTrayMenu()
+      If IniRead($var1, "hotkeys", "key", "NotFound") = 1 Then
+        HotKeySet(IniRead($var1, "hotkeys", "01", "NotFound") & IniRead($var1, "hotkeys", "07", "NotFound") & IniRead($var1, "hotkeys", "13", "NotFound") & IniRead($var1, "hotkeys", "19", "NotFound"), "_ShowWindows_VM")
+        HotKeySet(IniRead($var1, "hotkeys", "02", "NotFound") & IniRead($var1, "hotkeys", "08", "NotFound") & IniRead($var1, "hotkeys", "14", "NotFound") & IniRead($var1, "hotkeys", "20", "NotFound"), "_HideWindows_VM")
+        HotKeySet(IniRead($var1, "hotkeys", "03", "NotFound") & IniRead($var1, "hotkeys", "09", "NotFound") & IniRead($var1, "hotkeys", "15", "NotFound") & IniRead($var1, "hotkeys", "21", "NotFound"), "_ShowWindows")
+        HotKeySet(IniRead($var1, "hotkeys", "04", "NotFound") & IniRead($var1, "hotkeys", "10", "NotFound") & IniRead($var1, "hotkeys", "16", "NotFound") & IniRead($var1, "hotkeys", "22", "NotFound"), "_HideWindows")
+        HotKeySet(IniRead($var1, "hotkeys", "05", "NotFound") & IniRead($var1, "hotkeys", "11", "NotFound") & IniRead($var1, "hotkeys", "17", "NotFound") & IniRead($var1, "hotkeys", "23", "NotFound"), "_Settings")
+        HotKeySet(IniRead($var1, "hotkeys", "06", "NotFound") & IniRead($var1, "hotkeys", "12", "NotFound") & IniRead($var1, "hotkeys", "18", "NotFound") & IniRead($var1, "hotkeys", "24", "NotFound"), "_ExitScript")
+
+        Local $ctrl1, $ctrl2, $ctrl3, $ctrl4, $ctrl5, $ctrl6
+        Local $alt1, $alt2, $alt3, $alt4, $alt5, $alt6
+        Local $shift1, $shift2, $shift3, $shift4, $shift5, $shift6
+        Local $plus01, $plus02, $plus03, $plus04, $plus05, $plus06, $plus07, $plus08, $plus09, $plus10, $plus11, $plus12, $plus13, $plus14, $plus15, $plus16, $plus17, $plus18
+
+	If IniRead($var1, "hotkeys", "01", "NotFound") = "^" Then
+          $ctrl1  = "CTRL"
+          $plus01 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "02", "NotFound") = "^" Then
+          $ctrl2  = "CTRL"
+          $plus02 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "03", "NotFound") = "^" Then
+          $ctrl3  = "CTRL"
+          $plus03 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "04", "NotFound") = "^" Then
+          $ctrl4  = "CTRL"
+          $plus04 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "05", "NotFound") = "^" Then
+          $ctrl5  = "CTRL"
+          $plus05 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "06", "NotFound") = "^" Then
+          $ctrl6  = "CTRL"
+          $plus06 = "+"
+        EndIf
+
+        If IniRead($var1, "hotkeys", "07", "NotFound") = "!" Then
+          $alt1   = "ALT"
+          $plus07 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "08", "NotFound") = "!" Then
+          $alt2   = "ALT"
+          $plus08 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "09", "NotFound") = "!" Then
+          $alt3   = "ALT"
+          $plus09 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "10", "NotFound") = "!" Then
+          $alt4   = "ALT"
+          $plus10 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "11", "NotFound") = "!" Then
+          $alt5   = "ALT"
+          $plus11 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "12", "NotFound") = "!" Then
+          $alt6   = "ALT"
+          $plus12 = "+"
+        EndIf
+
+        If IniRead($var1, "hotkeys", "13", "NotFound") = "+" Then
+          $shift1 = "SHIFT"
+          $plus13 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "14", "NotFound") = "+" Then
+          $shift2 = "SHIFT"
+          $plus14 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "15", "NotFound") = "+" Then
+          $shift3 = "SHIFT"
+          $plus15 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "16", "NotFound") = "+" Then
+          $shift4 = "SHIFT"
+          $plus16 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "17", "NotFound") = "+" Then
+          $shift5 = "SHIFT"
+          $plus17 = "+"
+        EndIf
+        If IniRead($var1, "hotkeys", "18", "NotFound") = "+" Then
+          $shift6 = "SHIFT"
+          $plus18 = "+"
+        EndIf
+
+        TrayCreateItem(_GetTranslation($Lang, "tray", "01") &" (" & $ctrl1 & $plus01 & $alt1 & $plus07 & $shift1 & $plus13 & IniRead($var1, "hotkeys", "19", "NotFound") & ")")
+        TrayItemSetOnEvent(-1, "_ShowWindows_VM")
+        TrayCreateItem(_GetTranslation($Lang, "tray", "02") &" (" & $ctrl2 & $plus02 & $alt2 & $plus08 & $shift2 & $plus14 & IniRead($var1, "hotkeys", "20", "NotFound") & ")")
+        TrayItemSetOnEvent(-1, "_HideWindows_VM")
+        TrayCreateItem("")
+        TrayCreateItem(_GetTranslation($Lang, "tray", "03") &" (" & $ctrl3 & $plus03 & $alt3 & $plus09 & $shift3 & $plus15 & IniRead($var1, "hotkeys", "21", "NotFound") & ")")
+        TrayItemSetOnEvent(-1, "_ShowWindows")
+        TrayCreateItem(_GetTranslation($Lang, "tray", "04") &" (" & $ctrl4 & $plus04 & $alt4 & $plus10 & $shift4 & $plus16 & IniRead($var1, "hotkeys", "22", "NotFound") & ")")
+        TrayItemSetOnEvent(-1, "_HideWindows")
+        TrayCreateItem("")
+        TrayCreateItem(_GetTranslation($Lang, "tray", "05") &" (" & $ctrl5 & $plus05 & $alt5 & $plus11 & $shift5 & $plus17 & IniRead($var1, "hotkeys", "23", "NotFound") & ")")
+        TrayItemSetOnEvent(-1, "_Settings")
+        TrayCreateItem("")
+        TrayCreateItem(_GetTranslation($Lang, "tray", "06") &" (" & $ctrl6 & $plus06 & $alt6 & $plus12 & $shift6 & $plus18 & IniRead($var1, "hotkeys", "24", "NotFound") & ")")
+        TrayItemSetOnEvent(-1, "_ExitScript")
+        TraySetState()
+        TraySetToolTip(_GetTranslation($Lang, "tray", "07"))
+        TrayTip("", _GetTranslation($Lang, "tray", "07"), 5)
+      Else
+        TrayCreateItem(_GetTranslation($Lang, "tray", "01"))
+        TrayItemSetOnEvent(-1, "_ShowWindows_VM")
+        TrayCreateItem(_GetTranslation($Lang, "tray", "02"))
+        TrayItemSetOnEvent(-1, "_HideWindows_VM")
+        TrayCreateItem("")
+        TrayCreateItem(_GetTranslation($Lang, "tray", "03"))
+        TrayItemSetOnEvent(-1, "_ShowWindows")
+        TrayCreateItem(_GetTranslation($Lang, "tray", "04"))
+        TrayItemSetOnEvent(-1, "_HideWindows")
+        TrayCreateItem("")
+        TrayCreateItem(_GetTranslation($Lang, "tray", "05"))
+        TrayItemSetOnEvent(-1, "_Settings")
+        TrayCreateItem("")
+        TrayCreateItem(_GetTranslation($Lang, "tray", "06"))
+        TrayItemSetOnEvent(-1, "_ExitScript")
+        TraySetState()
+        TraySetToolTip(_GetTranslation($Lang, "tray", "07"))
+        TrayTip("", _GetTranslation($Lang, "tray", "07"), 5)
+      EndIf
 EndFunc
 
 Func _CloseGUI()
