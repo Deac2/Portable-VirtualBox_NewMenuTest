@@ -1209,10 +1209,10 @@ Func _Settings()
 	EndIf
 
 	$Checkboxsett_200 = GUICtrlCreateCheckbox("", 16, 153, 14, 14)
-	Local $Short_UserHome = StringReplace($UserHome, @ScriptDir&"\", "", 1)
+	Local $Short_UserHome = StringRegExpReplace($UserHome, "(?i)^.*?(\.VirtualBox)", "$1")
 	GUICtrlCreateLabel(_GetTranslation($Lang, "system", "02")&" ("&$Short_UserHome&"\*.log)", 32, 152, 546, 14)
 	$Checkboxsett_201 = GUICtrlCreateCheckbox("", 16, 173, 14, 14)
-	Local $Short_MachineFolder = StringReplace($DefaultMachineFolder, @ScriptDir&"\", "", 1)
+	Local $Short_MachineFolder = StringRegExpReplace($DefaultMachineFolder, "(?i)^.*?(\.VirtualBox)", "$1")
 	GUICtrlCreateLabel(_GetTranslation($Lang, "system", "03")&" ("&$Short_MachineFolder&"\...\*.log.*)", 32, 172, 546, 14)
 	$Checkboxsett_202 = GUICtrlCreateCheckbox("", 16, 193, 14, 14)
 	GUICtrlCreateLabel(_GetTranslation($Lang, "system", "04"), 32, 192, 546, 14)
