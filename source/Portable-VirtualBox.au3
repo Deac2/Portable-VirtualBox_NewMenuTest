@@ -16,7 +16,6 @@ If NOT @Compiled Then Opt("TrayIconDebug", 1)
 #pragma compile(ProductVersion, 6.4.9.1")
 #pragma compile(FileVersion, 6.4.9.1")
 #pragma compile(AutoItExecuteAllowed, true)
-#EndRegion
 
 #include <GUIConstantsEx.au3>
 #include <RecFileListToArray.au3>
@@ -24,6 +23,7 @@ If NOT @Compiled Then Opt("TrayIconDebug", 1)
 #include <SingleTon.au3>
 
 _SingleTon(@ScriptName)
+#RequireAdmin
 
 Opt("GUIOnEventMode", 1)
 Opt("TrayAutoPause", 0)
