@@ -1763,10 +1763,25 @@ Func Stop_VirtualBox()
 
     Local $ADPVER = (FileExists(@ScriptDir & "\" & $App_Dir & "\drivers\network\netadp6") ? 6 : "")
 
+#cs
     RunWait($App_Dir & "\VBoxSVC.exe /unregserver", @ScriptDir, @SW_HIDE)
     RunWait(@SystemDir & "\regsvr32.exe /S /U " & $App_Dir & "\VBoxC.dll", @ScriptDir, @SW_HIDE)
     RunWait($App_Dir & "\VBoxSDS.exe /UnregService", @ScriptDir, @SW_HIDE)
     RunWait(@SystemDir & "\regsvr32.exe /S /U " & $App_Dir & "\VBoxProxyStub.dll", @ScriptDir, @SW_HIDE)
+#ce
+    RunWait($App_Dir & "\VBoxSVC.exe /unregserver", @ScriptDir, @SW_HIDE)
+    RunWait($App_Dir & "\VBoxSDS.exe /UnregService", @ScriptDir, @SW_HIDE)
+    If NOT @AutoItX64 AND FileExists(@ScriptDir & "\" & $App_Dir & "\x86\VBoxClient-x86.dll") AND $App_Dir = "app64" Then
+	RunWait(@WindowsDir & "\SysWOW64\regsvr32.exe /S /U " & $App_Dir & "\x86\VBoxClient-x86.dll", @ScriptDir, @SW_HIDE)
+	Else
+	RunWait(@WindowsDir & "\System32\regsvr32.exe /S /U " & $App_Dir & "\VBoxC.dll", @ScriptDir, @SW_HIDE)
+	Endif
+	
+	If NOT @AutoItX64 AND FileExists(@ScriptDir & "\" & $App_Dir & "\x86\VBoxProxyStub-x86.dll") AND $App_Dir = "app64" Then
+	RunWait(@WindowsDir & "\SysWOW64\regsvr32.exe /S /U " & $App_Dir & "\x86\VBoxProxyStub-x86.dll", @ScriptDir, @SW_HIDE)
+	Else
+	RunWait(@WindowsDir & "\System32\regsvr32.exe /S /U " & $App_Dir & "\VBoxProxyStub.dll", @ScriptDir, @SW_HIDE)
+	Endif
 
     If $DRV = 1 Then
         RunWait("sc stop VBoxDRV", @ScriptDir, @SW_HIDE)
@@ -1909,11 +1924,34 @@ Func Start_VirtualBox()
         EndIf
     EndIf
 
+#cs
     RunWait($App_Dir & "\VBoxSDS.exe /RegService", @ScriptDir, @SW_HIDE)
     RunWait($App_Dir & "\VBoxSVC.exe /reregserver", @ScriptDir, @SW_HIDE)
     RunWait(@SystemDir & "\regsvr32.exe /S " & $App_Dir & "\VBoxC.dll", @ScriptDir, @SW_HIDE)
     RunWait(@SystemDir & "\regsvr32.exe /S " & $App_Dir & "\VBoxProxyStub.dll", @ScriptDir, @SW_HIDE)
 	DllCall(@ScriptDir & "\" & $App_Dir & "\VBoxRT.dll", "int", "RTR3Init")
+#ce
+
+
+    RunWait($App_Dir & "\VBoxSDS.exe /RegService", @ScriptDir, @SW_HIDE)
+    RunWait($App_Dir & "\VBoxSVC.exe /reregserver", @ScriptDir, @SW_HIDE)
+    If NOT @AutoItX64 AND FileExists(@ScriptDir & "\" & $App_Dir & "\x86\VBoxClient-x86.dll") AND $App_Dir = "app64" Then
+	RunWait(@WindowsDir & "\SysWOW64\regsvr32.exe /S " & $App_Dir & "\x86\VBoxClient-x86.dll", @ScriptDir, @SW_HIDE)
+	Else
+	RunWait(@WindowsDir & "\System32\regsvr32.exe /S " & $App_Dir & "\VBoxC.dll", @ScriptDir, @SW_HIDE)
+	Endif
+	
+	If NOT @AutoItX64 AND FileExists(@ScriptDir & "\" & $App_Dir & "\x86\VBoxProxyStub-x86.dll") AND $App_Dir = "app64" Then
+	RunWait(@WindowsDir & "\SysWOW64\regsvr32.exe /S " & $App_Dir & "\x86\VBoxProxyStub-x86.dll", @ScriptDir, @SW_HIDE)
+	Else
+	RunWait(@WindowsDir & "\System32\regsvr32.exe /S " & $App_Dir & "\VBoxProxyStub.dll", @ScriptDir, @SW_HIDE)
+	Endif
+
+	if NOT @AutoItX64 AND FileExists(@ScriptDir & "\" & $App_Dir & "\x86\VBoxRT-x86.dll") Then
+	DllCall(@ScriptDir & "\" & $App_Dir & "\x86\VBoxRT-x86.dll", "int", "RTR3Init")
+	Else
+	DllCall(@ScriptDir & "\" & $App_Dir & "\VBoxRT.dll", "int", "RTR3Init")
+	Endif
 EndFunc
 
 Func ReStart_VirtualBox()
