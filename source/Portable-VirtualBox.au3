@@ -57,8 +57,6 @@ Global Const $WS_SYSMENU = 0x80000, $WS_MINIMIZEBOX = 0x20000, $CBS_DROPDOWNLIST
 Global $idTab, $Label_Net, $Label_Svc, $aLastStatus[6] = ["?", "?", "?", "?", "?", "?"]
 Global $OsArch = (@OSArch <> "x86" ? "x64" : "x86")
 
-_TrayMenu()
-
 If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\app64\virtualbox.exe")) Then
   If FileExists(@ScriptDir&"\app32\") AND FileExists(@ScriptDir&"\app64\") Then
     If @OSArch = "x86" Then
@@ -121,6 +119,7 @@ If IniRead($var1, "lang", "key", "NotFound") = 0 Then
 EndIf
 
 _UpdateSettings()
+_TrayMenu()
 IniWrite($var1, "userhome", "key", _ValidatePath($UserHome, $DefaultUserHome))
 IniWrite($var1, "MachineFolder", "key", _ValidatePath($MachineFolder, $DefaultMachineFolder))
 ; Thibaut : use Hybrid Mode if available
