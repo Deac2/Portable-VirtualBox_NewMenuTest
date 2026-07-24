@@ -253,7 +253,7 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
     Local $line, $content, $i, $j, $k, $l, $m, $n
     Local $file = FileOpen($UserHome&"\VirtualBox.xml", 256)
     If $file <> -1 Then
-      $line    = FileRead($file)
+      $line = FileRead($file)
 	  FileClose($file)
       $values0 = _StringBetween($line, '<MachineRegistry>', '</MachineRegistry>')
       If $values0 = 0 Then
@@ -272,6 +272,7 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
      If IsArray($aArray) Then
      For $i = 1 To $aArray[0]
 		If NOT StringRegExp($aArray[$i], ".bin") Then
+          $line = ""
 		  $file = FileOpen($aArray[$i], 256)
 		  If $file <> -1 Then
 		  $line = FileRead($file)
@@ -344,7 +345,6 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
         EndIf
       Next
 	  EndIf
-	  
 
       #clear log
       If IniRead($var1, "Core_Logs", "key", "0") = 1 Then
