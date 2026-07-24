@@ -57,6 +57,8 @@ Global Const $WS_SYSMENU = 0x80000, $WS_MINIMIZEBOX = 0x20000, $CBS_DROPDOWNLIST
 Global $idTab, $Label_Net, $Label_Svc, $aLastStatus[6] = ["?", "?", "?", "?", "?", "?"]
 Global $OsArch = (@OSArch <> "x86" ? "x64" : "x86")
 
+_TrayMenu()
+
 If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\app64\virtualbox.exe")) Then
   If FileExists(@ScriptDir&"\app32\") AND FileExists(@ScriptDir&"\app64\") Then
     If @OSArch = "x86" Then
@@ -131,8 +133,6 @@ If NOT (FileExists(@ScriptDir&"\app32\VirtualBox.exe") OR FileExists(@ScriptDir&
   Global $Input100, $Input200, $Button100, $Button200
   Global $install = 1
 
-  _TrayMenu()
-
   Global $Gui_Setup = GUICreate(_GetTranslation($Lang, "download", "01"), 662, 380, -1, -1, BitOR($WS_SYSMENU, $WS_MINIMIZEBOX))
   GUISetOnEvent($GUI_EVENT_CLOSE, "_ExitGUI")
   GUISetFont(10, 400, 0, "Arial")
@@ -192,7 +192,6 @@ EndIf
 If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\app64\virtualbox.exe")) AND ($startvbox = 1 OR IniRead($var1, "startvbox", "key", "NotFound") = 1) Then
   IniDelete($var1, "startvbox")
   EnvSet("VBOX_USER_HOME", $UserHome) ;Active UserHome
-	_TrayMenu()
 #cs
   If FileExists(@ScriptDir&"\app32\") AND FileExists(@ScriptDir&"\app64\") Then
     If @OSArch = "x86" Then
