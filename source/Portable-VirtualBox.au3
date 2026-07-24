@@ -1111,6 +1111,7 @@ Func _Settings()
     GUICtrlCreateButton(_GetTranslation($Lang, "messages", "03"), 336, 302, 129, 27)
     GUICtrlSetOnEvent(-1, "_CloseGUI")
 
+
     GUICtrlCreateTabItem(_GetTranslation($Lang, "hotkey-settings", "01"))
     GUICtrlCreateLabel(_GetTranslation($Lang, "hotkey-settings", "02"), 16, 40, 546, 60)
 
@@ -1763,7 +1764,6 @@ Else
         TrayTip("", _GetTranslation($Lang, "tray", "07"), 5)
       EndIf
 Endif
-
 EndFunc
 
 Func _CloseGUI()
