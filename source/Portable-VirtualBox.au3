@@ -419,7 +419,7 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
         FileMove(@ScriptDir&"\vboxadditions\guestadditions\*.*", @ScriptDir&"\"&$App_Dir&"\", 9)
       Endif
 
-      ;_Start_VirtualBox()
+      _Start_VirtualBox()
       SplashOff()
 
       If $CmdLine[0] = 1 Then
@@ -453,7 +453,6 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
 			RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
 		  Else
 			IniWrite($var1, "startvm", "key", "")
-			_Start_VirtualBox()
 			RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
           EndIf
         Else
