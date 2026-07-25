@@ -209,13 +209,47 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
   EndIf
 #ce
 
-  If FileExists($UserHome&"\VirtualBox.xml-prev") Then
-    FileDelete($UserHome&"\VirtualBox.xml-prev")
-  EndIf
+      #clear log
+      If IniRead($var1, "Core_Logs", "key", "0") = 1 Then
+      If FileExists($UserHome) Then
+      FileDelete($UserHome&"\*.log")
+      FileDelete($UserHome&"\*.log.*")
+	  FileDelete($UserHome&"\VirtualBox.xml-prev")
+      FileDelete($UserHome&"\VirtualBox.xml-tmp")
+      EndIf
+	  EndIf
 
-  If FileExists($UserHome&"\VirtualBox.xml-tmp") Then
-    FileDelete($UserHome&"\VirtualBox.xml-tmp")
-  EndIf
+		#clear log Machines
+		If IniRead($var1, "VM_Logs", "key", "0") = 1 Then
+	  If FileExists($UserHome&"\VirtualBox.xml") Then
+		Local $file = FileOpen($UserHome&"\VirtualBox.xml", 256)
+		If $file <> -1 Then
+		$line = FileRead($file)
+		FileClose($file)
+		$values0 = _StringBetween($line, '<MachineRegistry>', '</MachineRegistry>')
+		If $values0 = 0 Then
+        $values1 = 0
+		Else
+		$values1 = _StringBetween($values0[0], 'src="', '"')
+		EndIf
+		EndIf
+
+		For $i = 0 To UBound($values1) - 1
+		Local $Result = StringSplit(StringReplace($values1[$i], ".vbox", ""), "\")
+		Local $ResultName = $Result[$Result[0]]
+		$aArray = _RecFileListToArray($UserHome, "*"&$ResultName&".vbox", 1, 1, 0, 2)
+		If IsArray($aArray) Then
+		For $j = 1 To $aArray[0]
+		If FileExists($aArray[$j]) Then
+		Local $Patch = StringRegExpReplace($aArray[$j], "[^\\]+$", "")
+		FileDelete($Patch&"Logs\*.log")
+		FileDelete($Patch&"Logs\*.log.*")
+		EndIf
+		Next
+		EndIf
+		Next
+	  EndIf
+		EndIf
 
   If NOT FileExists($UserHome & "\VirtualBox.xml") Then
 	Local $XmlContent = '<?xml version="1.0"?>' & @LF & _
@@ -344,34 +378,6 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
         EndIf
       Next
 	  EndIf
-
-      #clear log
-      If IniRead($var1, "Core_Logs", "key", "0") = 1 Then
-      If FileExists($UserHome) Then
-      FileDelete($UserHome&"\*.log")
-      FileDelete($UserHome&"\*.log.*")
-      EndIf
-	  EndIf
-
-		#clear log Machines
-		If IniRead($var1, "VM_Logs", "key", "0") = 1 Then
-	  If FileExists($UserHome&"\VirtualBox.xml") Then
-		For $i = 0 To UBound($values1) - 1
-		Local $Result = StringSplit(StringReplace($values1[$i], ".vbox", ""), "\")
-		Local $ResultName = $Result[$Result[0]]
-		$aArray = _RecFileListToArray($UserHome, "*"&$ResultName&".vbox", 1, 1, 0, 2)
-		If IsArray($aArray) Then
-		For $j = 1 To $aArray[0]
-		If FileExists($aArray[$j]) Then
-		Local $Patch = StringRegExpReplace($aArray[$j], "[^\\]+$", "")
-		FileDelete($Patch&"Logs\*.log")
-		FileDelete($Patch&"Logs\*.log.*")
-		EndIf
-		Next
-		EndIf
-		Next
-	  EndIf
-		EndIf
     EndIf
   Else
     MsgBox(0+262144, _GetTranslation($Lang, "download", "15"), _GetTranslation($Lang, "download", "16"))
@@ -413,7 +419,7 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
         FileMove(@ScriptDir&"\vboxadditions\guestadditions\*.*", @ScriptDir&"\"&$App_Dir&"\", 9)
       Endif
 
-      _Start_VirtualBox()
+      ;_Start_VirtualBox()
       SplashOff()
 
       If $CmdLine[0] = 1 Then
@@ -447,6 +453,7 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
 			RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
 		  Else
 			IniWrite($var1, "startvm", "key", "")
+			_Start_VirtualBox()
 			RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
           EndIf
         Else
@@ -1885,7 +1892,7 @@ Func _Start_VirtualBox()
 #ce
 
     RunWait($App_Dir & "\VBoxSDS.exe /RegService", @ScriptDir, @SW_HIDE)
-    RunWait($App_Dir & "\VBoxSVC.exe /reregserver", @ScriptDir, @SW_HIDE)
+	RunWait($App_Dir & "\VBoxSVC.exe /regserver", @ScriptDir, @SW_HIDE)
     If NOT @AutoItX64 AND FileExists(@ScriptDir & "\" & $App_Dir & "\x86\VBoxClient-x86.dll") AND $App_Dir = "app64" Then
 	RunWait(@WindowsDir & "\SysWOW64\regsvr32.exe /S " & $App_Dir & "\x86\VBoxClient-x86.dll", @ScriptDir, @SW_HIDE)
 	Else
