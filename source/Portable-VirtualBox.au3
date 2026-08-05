@@ -1811,7 +1811,9 @@ Func _ExitScript()
   _ProcessNameClose("VirtualBox.exe")
   _ProcessNameClose("VBoxManage.exe")
   _ProcessNameClose("VirtualBoxVM.exe")
+  While ProcessExists("VBoxSVC.exe")
   _ProcessNameClose("VBoxSVC.exe")
+  WEnd
   _ProcessNameClose("VBoxSDS.exe")
 EndFunc
 
@@ -1931,6 +1933,9 @@ Func _Stop_VirtualBox()
 #ce
     RunWait($App_Dir & "\VBoxSVC.exe /unregserver", @ScriptDir, @SW_HIDE)
     RunWait($App_Dir & "\VBoxSDS.exe /UnregService", @ScriptDir, @SW_HIDE)
+	While ProcessExists("VBoxSVC.exe")
+    ProcessClose("VBoxSVC.exe")
+	WEnd
     If NOT @AutoItX64 AND FileExists(@ScriptDir & "\" & $App_Dir & "\x86\VBoxClient-x86.dll") AND $App_Dir = "app64" Then
 	RunWait(@WindowsDir & "\SysWOW64\regsvr32.exe /S /U " & $App_Dir & "\x86\VBoxClient-x86.dll", @ScriptDir, @SW_HIDE)
 	Else
