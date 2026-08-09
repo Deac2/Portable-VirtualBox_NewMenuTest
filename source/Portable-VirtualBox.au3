@@ -24,6 +24,7 @@ Endif
 #include <RecFileListToArray.au3>
 #include <Language.au3>
 #include <SingleTon.au3>
+OnAutoItExitRegister("_MyCleanup")
 
 _SingleTon(@ScriptName)
 #RequireAdmin
@@ -385,7 +386,7 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
     MsgBox(0+262144, _GetTranslation($Lang, "download", "15"), _GetTranslation($Lang, "download", "16"))
   EndIf
 
-  If FileExists(@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe") AND FileExists(@ScriptDir&"\"&$App_Dir&"\VBoxSVC.exe") AND FileExists(@ScriptDir&"\"&$App_Dir&"\VBoxC.dll") Then
+  If  FileExists(@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe") AND FileExists(@ScriptDir&"\"&$App_Dir&"\VBoxSVC.exe") AND FileExists(@ScriptDir&"\"&$App_Dir&"\VBoxC.dll") Then
     If NOT ProcessExists("VirtualBox.exe") OR NOT ProcessExists("VBoxManage.exe") Then
       If FileExists(@ScriptDir&"\data\settings\SplashScreen.jpg") Then
         SplashImageOn("Portable-VirtualBox", @ScriptDir&"\data\settings\SplashScreen.jpg", 480, 360, -1, -1, 1)
@@ -437,36 +438,54 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
           Endif
 		  If IniRead($var1, "userhome", "key", "NotFound") = $UserHome Then
 			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-			RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
+			;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
+			Run(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
           Else
-            RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+            ;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
           EndIf
         Else
-			RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+			;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
         EndIf
 
-        ProcessWaitClose("VirtualBox.exe")
-        ProcessWaitClose("VBoxManage.exe")
+        ;ProcessWaitClose("VirtualBox.exe")
+        ;ProcessWaitClose("VBoxManage.exe")
       Else
         If FileExists($UserHome) Then
           Local $StartVM  = IniRead($var1, "startvm", "key", "NotFound")
 		  If $StartVM <> "NotFound" And $StartVM <> ""  And FileExists($MachineFolder & "\" & $StartVM) Then
 			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-			RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
+			;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
+			Run(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
 		  Else
 			IniWrite($var1, "startvm", "key", "")
-			RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+			;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
           EndIf
         Else
-          RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+          ;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+		  Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
         EndIf
-
-        ProcessWaitClose("VirtualBox.exe")
-        ProcessWaitClose("VBoxManage.exe")
+        ;ProcessWaitClose("VirtualBox.exe")
+        ;ProcessWaitClose("VBoxManage.exe")
       EndIf
+
+      $PVirtualBox = 1
+      While 1
+      If $PVirtualBox = 0 Then ExitLoop
+      WEnd
 
       SplashTextOn("Portable-VirtualBox", _GetTranslation($Lang, "messages", "07"), 220, 40, -1, -1, 1, "arial", 12)
 
+      Local $PortMode = IniRead($var1, "PortableMode", "key", "0")
+      If $PortMode = 0 Then
+	  _Stop_VirtualBox()
+      EndIf
+
+      _ExitScript()
+
+#cs
       _ExitScript()
 
       Local $PortMode = IniRead($var1, "PortableMode", "key", "0")
@@ -474,6 +493,7 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
 	  _Stop_VirtualBox()
       EndIf
       SplashOff()
+#ce
     Else
       _WinSetState("VirtualBox.exe", BitAND(@SW_SHOW, @SW_RESTORE))
       _WinSetState("VirtualBoxVM.exe", BitAND(@SW_SHOW, @SW_RESTORE))
@@ -1815,6 +1835,8 @@ Func _ExitScript()
   _ProcessNameClose("VBoxSVC.exe")
   WEnd
   _ProcessNameClose("VBoxSDS.exe")
+  ;ProcessClose(@AutoItPID)
+  $PVirtualBox = 0
 EndFunc
 
 Func _ProcessNameClose($ProcessName)
@@ -1913,9 +1935,26 @@ Func _Start_VirtualBox()
 	Else
 	DllCall(@ScriptDir & "\" & $App_Dir & "\VBoxRT.dll", "int", "RTR3Init")
 	Endif
+	If NOT ProcessExists("VirtualBox.exe") Then
+    Run("""" & @ScriptDir & "\" & $App_Dir & "\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+	EndIf
 EndFunc
 
 Func _Stop_VirtualBox()
+  Opt("WinTitleMatchMode", 2)
+  WinClose("VirtualBoxVM", "")
+  WinWaitClose("VirtualBoxVM", "")
+  WinClose("] - Oracle")
+  WinWaitClose("] - Oracle")
+  WinClose("Oracle", "")
+  _ProcessNameClose("VirtualBox.exe")
+  _ProcessNameClose("VBoxManage.exe")
+  _ProcessNameClose("VirtualBoxVM.exe")
+  While ProcessExists("VBoxSVC.exe")
+  _ProcessNameClose("VBoxSVC.exe")
+  WEnd
+  _ProcessNameClose("VBoxSDS.exe")
+
     Local $DRV = (_RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxDrv", "DisplayName") <> "" ? 1 : 0)
     Local $SUP = (_RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxSup", "DisplayName") <> "" ? 1 : 0)
     Local $USB = (_RegRead("HKLM\SYSTEM\CurrentControlSet\Services\VBoxUSB", "DisplayName") <> "" ? 1 : 0)
