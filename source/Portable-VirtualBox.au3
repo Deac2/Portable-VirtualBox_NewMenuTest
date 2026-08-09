@@ -24,7 +24,6 @@ Endif
 #include <RecFileListToArray.au3>
 #include <Language.au3>
 #include <SingleTon.au3>
-OnAutoItExitRegister("_MyCleanup")
 
 _SingleTon(@ScriptName)
 #RequireAdmin
@@ -386,7 +385,7 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
     MsgBox(0+262144, _GetTranslation($Lang, "download", "15"), _GetTranslation($Lang, "download", "16"))
   EndIf
 
-  If  FileExists(@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe") AND FileExists(@ScriptDir&"\"&$App_Dir&"\VBoxSVC.exe") AND FileExists(@ScriptDir&"\"&$App_Dir&"\VBoxC.dll") Then
+  If FileExists(@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe") AND FileExists(@ScriptDir&"\"&$App_Dir&"\VBoxSVC.exe") AND FileExists(@ScriptDir&"\"&$App_Dir&"\VBoxC.dll") Then
     If NOT ProcessExists("VirtualBox.exe") OR NOT ProcessExists("VBoxManage.exe") Then
       If FileExists(@ScriptDir&"\data\settings\SplashScreen.jpg") Then
         SplashImageOn("Portable-VirtualBox", @ScriptDir&"\data\settings\SplashScreen.jpg", 480, 360, -1, -1, 1)
@@ -1835,7 +1834,6 @@ Func _ExitScript()
   _ProcessNameClose("VBoxSVC.exe")
   WEnd
   _ProcessNameClose("VBoxSDS.exe")
-  ;ProcessClose(@AutoItPID)
   $PVirtualBox = 0
 EndFunc
 
