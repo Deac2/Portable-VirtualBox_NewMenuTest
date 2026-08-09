@@ -424,52 +424,6 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
       _Start_VirtualBox()
       SplashOff()
 
-      If $CmdLine[0] = 1 Then
-        If FileExists($UserHome) Then
-          Local $StartVM = $CmdLine[1]
-		  Local $Patch = ""
-		  $VMStartSearch = StringRegExpReplace($StartVM, "\h*[{}\[\]]+\h*", "_")
-          $aArray = _RecFileListToArray($UserHome, "*"&$VMStartSearch&".vdi", 1, 1, 0, 2)
-          If IsArray($aArray) Then
-			For $i = 1 To $aArray[0]
-			$Patch = $aArray[$i]
-			Next
-          Endif
-		  If IniRead($var1, "userhome", "key", "NotFound") = $UserHome Then
-			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-			;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
-			Run(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
-          Else
-            ;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-          EndIf
-        Else
-			;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-        EndIf
-
-        ;ProcessWaitClose("VirtualBox.exe")
-        ;ProcessWaitClose("VBoxManage.exe")
-      Else
-        If FileExists($UserHome) Then
-          Local $StartVM  = IniRead($var1, "startvm", "key", "NotFound")
-		  If $StartVM <> "NotFound" And $StartVM <> ""  And FileExists($MachineFolder & "\" & $StartVM) Then
-			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-			;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
-			Run(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
-		  Else
-			IniWrite($var1, "startvm", "key", "")
-			;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-          EndIf
-        Else
-          ;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-		  Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-        EndIf
-        ;ProcessWaitClose("VirtualBox.exe")
-        ;ProcessWaitClose("VBoxManage.exe")
-      EndIf
-
       $PVirtualBox = 1
       While 1
       If $PVirtualBox = 0 Then ExitLoop
@@ -1933,9 +1887,52 @@ Func _Start_VirtualBox()
 	Else
 	DllCall(@ScriptDir & "\" & $App_Dir & "\VBoxRT.dll", "int", "RTR3Init")
 	Endif
-	If NOT ProcessExists("VirtualBox.exe") Then
-    Run("""" & @ScriptDir & "\" & $App_Dir & "\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
-	EndIf
+
+      If $CmdLine[0] = 1 Then
+        If FileExists($UserHome) Then
+          Local $StartVM = $CmdLine[1]
+		  Local $Patch = ""
+		  $VMStartSearch = StringRegExpReplace($StartVM, "\h*[{}\[\]]+\h*", "_")
+          $aArray = _RecFileListToArray($UserHome, "*"&$VMStartSearch&".vdi", 1, 1, 0, 2)
+          If IsArray($aArray) Then
+			For $i = 1 To $aArray[0]
+			$Patch = $aArray[$i]
+			Next
+          Endif
+		  If IniRead($var1, "userhome", "key", "NotFound") = $UserHome Then
+			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+			;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
+			Run(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
+          Else
+            ;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+          EndIf
+        Else
+			;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+        EndIf
+
+        ;ProcessWaitClose("VirtualBox.exe")
+        ;ProcessWaitClose("VBoxManage.exe")
+      Else
+        If FileExists($UserHome) Then
+          Local $StartVM  = IniRead($var1, "startvm", "key", "NotFound")
+		  If $StartVM <> "NotFound" And $StartVM <> ""  And FileExists($MachineFolder & "\" & $StartVM) Then
+			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+			;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
+			Run(""""&@ScriptDir&"\"&$App_Dir&"\VBoxManage.exe"" startvm """&$StartVM&"""", @ScriptDir, @SW_HIDE)
+		  Else
+			IniWrite($var1, "startvm", "key", "")
+			;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+			Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+          EndIf
+        Else
+          ;RunWait(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+		  Run(""""&@ScriptDir&"\"&$App_Dir&"\VirtualBox.exe""", @ScriptDir, @SW_SHOW)
+        EndIf
+        ;ProcessWaitClose("VirtualBox.exe")
+        ;ProcessWaitClose("VBoxManage.exe")
+      EndIf
 EndFunc
 
 Func _Stop_VirtualBox()
