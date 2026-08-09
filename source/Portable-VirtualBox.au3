@@ -426,6 +426,14 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
 
       $PVirtualBox = 1
       While 1
+            Local $VBoxDrv = _Get_Service_Status("VBoxDrv")
+            Local $VBoxSup = _Get_Service_Status("VBoxSup")
+			Local $StatusLwf = _Get_Service_Status("VBoxNetLwf")
+			Local $StatusFlt = _Get_Service_Status("VBoxNetFlt")
+			If ($VBoxDrv = "R" OR $VBoxSup = "R") AND ($StatusLwf = "R" OR $StatusFlt = "R") AND IsObj(ObjCreate("VirtualBox.VirtualBox")) Then
+			_Startup_VirtualBox()
+			EndIf
+
       If $PVirtualBox = 0 Then ExitLoop
       WEnd
 
@@ -869,7 +877,7 @@ Func _Get_Service_Status($sServiceName)
 EndFunc
 
 Func _UpdateTabSystem()
-    Local Static $aServices = [ _
+    Local $aServices = [ _
         ["Svc_Drv", 80], _
         ["Net_Drv", 150], _
         ["VBoxNetAdp", 220], _
@@ -1888,6 +1896,11 @@ Func _Start_VirtualBox()
 	DllCall(@ScriptDir & "\" & $App_Dir & "\VBoxRT.dll", "int", "RTR3Init")
 	Endif
 
+	_Startup_VirtualBox()
+EndFunc
+
+Func _Startup_VirtualBox()
+If NOT ProcessExists("VirtualBox.exe") Then
       If $CmdLine[0] = 1 Then
         If FileExists($UserHome) Then
           Local $StartVM = $CmdLine[1]
@@ -1933,6 +1946,7 @@ Func _Start_VirtualBox()
         ;ProcessWaitClose("VirtualBox.exe")
         ;ProcessWaitClose("VBoxManage.exe")
       EndIf
+EndIf
 EndFunc
 
 Func _Stop_VirtualBox()
