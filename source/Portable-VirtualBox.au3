@@ -428,9 +428,7 @@ If (FileExists(@ScriptDir&"\app32\virtualbox.exe") OR FileExists(@ScriptDir&"\ap
       While 1
             Local $VBoxDrv = _Get_Service_Status("VBoxDrv")
             Local $VBoxSup = _Get_Service_Status("VBoxSup")
-			Local $StatusLwf = _Get_Service_Status("VBoxNetLwf")
-			Local $StatusFlt = _Get_Service_Status("VBoxNetFlt")
-			If ($VBoxDrv = "R" OR $VBoxSup = "R") AND ($StatusLwf = "R" OR $StatusFlt = "R") AND IsObj(ObjCreate("VirtualBox.VirtualBox")) Then
+			If ($VBoxDrv = "R" OR $VBoxSup = "R") AND IsObj(ObjCreate("VirtualBox.VirtualBox")) Then
 			_Startup_VirtualBox()
 			EndIf
 
@@ -1809,8 +1807,8 @@ Func _ProcessNameClose($ProcessName)
 EndFunc
 
 Func _Start_VirtualBox()
-GUICtrlSetState($Restart, $GUI_DISABLE)
-GUICtrlSetState($Stop, $GUI_DISABLE)
+	GUICtrlSetState($Restart, $GUI_DISABLE)
+	GUICtrlSetState($Stop, $GUI_DISABLE)
 	EnvSet("VBOX_USER_HOME", $UserHome) ;Active UserHome
     If FileExists(@ScriptDir & "\" & $App_Dir & "\drivers\vboxdrv") And _RegRead("HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VBoxDRV", "DisplayName") <> "Portable VBoxDRV" Then
         RunWait("cmd /c sc create VBoxDRV binpath= ""%CD%\" & $App_Dir & "\drivers\VBoxDrv\VBoxDrv.sys"" type= kernel start= auto error= normal displayname=""Portable VBoxDRV""", @ScriptDir, @SW_HIDE)
@@ -1897,8 +1895,9 @@ GUICtrlSetState($Stop, $GUI_DISABLE)
 	Else
 	DllCall(@ScriptDir & "\" & $App_Dir & "\VBoxRT.dll", "int", "RTR3Init")
 	Endif
-GUICtrlSetState($Restart, $GUI_ENABLE)
-GUICtrlSetState($Stop, $GUI_ENABLE)
+	GUICtrlSetState($Restart, $GUI_ENABLE)
+	GUICtrlSetState($Stop, $GUI_ENABLE)
+	_Startup_VirtualBox()
 EndFunc
 
 Func _Startup_VirtualBox()
@@ -1952,8 +1951,8 @@ EndIf
 EndFunc
 
 Func _Stop_VirtualBox()
-GUICtrlSetState($Restart, $GUI_DISABLE)
-GUICtrlSetState($Stop, $GUI_DISABLE)
+  GUICtrlSetState($Restart, $GUI_DISABLE)
+  GUICtrlSetState($Stop, $GUI_DISABLE)
   Opt("WinTitleMatchMode", 2)
   WinClose("VirtualBoxVM", "")
   WinWaitClose("VirtualBoxVM", "")
@@ -2080,8 +2079,8 @@ GUICtrlSetState($Stop, $GUI_DISABLE)
     EndIf
 
     RunWait("sc delete VBoxSDS", @ScriptDir, @SW_HIDE)
-GUICtrlSetState($Restart, $GUI_ENABLE)
-GUICtrlSetState($Stop, $GUI_ENABLE)
+  GUICtrlSetState($Restart, $GUI_ENABLE)
+  GUICtrlSetState($Stop, $GUI_ENABLE)
 EndFunc
 
 Func _ReStart_VirtualBox()
